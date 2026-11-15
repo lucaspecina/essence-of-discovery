@@ -1,7 +1,7 @@
 # CLAUDE.md — essence-of-discovery
 
 Al arrancar: leé `README.md` (la pregunta y el estado) y `docs/decisions/`. Si no conocés el proyecto,
-`docs/guide.md`. El repo anterior (`research-worlds-envs`, WAGER) es biblioteca de solo lectura: sus reglas
+`docs/guide.md` y `research/notes/2026-11-15-handoff.md`. El repo anterior (`research-worlds-envs`, WAGER) es biblioteca de solo lectura: sus reglas
 y su vocabulario (vicios, saltos, perillas) **no** aplican acá.
 
 ## Reglas duras

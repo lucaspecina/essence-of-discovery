@@ -27,6 +27,10 @@ pruebas puntuales de WAGER.
 
 - [Descubrir = encontrar un atajo verificable](proposals/2026-11-15-discovery-as-finding-a-shortcut.md) — la cumbre de ARC, la idea, las críticas y el trabajo previo de otros (§8).
 
+## notes
+
+- [Traspaso del 15-nov-2026](notes/2026-11-15-handoff.md) — dónde estamos y qué espera a Lucas.
+
 ## legacy/readings
 
 - [Registro de lecturas](legacy/readings/reading-log.md) — qué se leyó de verdad, y cómo.
