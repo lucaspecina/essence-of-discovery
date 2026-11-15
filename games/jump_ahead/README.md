@@ -28,8 +28,19 @@ Corre en segundos y comprueba, entre otras cosas:
   sale en milisegundos; sin el atajo, el sistema recién se repite a los 794.728.597.005.208 pasos;
 - una trampa: un dibujo que se repite 118 veces seguidas y a la vuelta siguiente cambia.
 
-**No hecho:** ninguna partida con una IA. No hay todavía generador de mundos, ni computadora de pruebas
-para el agente, ni puntaje implementado.
+**Mini-juegos armados y verificados sin IA** (`minigames/`, se comprueban con
+`python games/jump_ahead/verify_minigames.py`):
+
+| Mini-juego | Regla de generación (la IA la ve) | Regla de resultado (la IA la tiene que encontrar) |
+|---|---|---|
+| `ring-shift-7` | Cada casilla copia a su vecina de la izquierda | Todo se repite cada 7 pasos. Es el control fácil: si una IA falla acá, lo roto es nuestro programa |
+| `xor-ring-101` | Una casilla queda prendida si sus dos vecinas eran distintas | Después de 2, 4, 8, 16... pasos, cada casilla depende solo de las dos que están a esa distancia. Contando 200.000 pasos la fila no se repite |
+
+En los dos, la regla de resultado coincide con la cuenta larga en los pasos 0 a 3.000, y las respuestas del
+paso un trillón salen en milisegundos.
+
+**No hecho:** ninguna partida con una IA. No hay todavía computadora de pruebas para el agente. El puntaje
+está implementado (`minigames/base.py`).
 
 ## Lo que sigue (espera el OK de Lucas)
 
