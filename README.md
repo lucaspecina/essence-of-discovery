@@ -26,7 +26,7 @@ En la raíz va solo lo oficial. Abajo, cada cosa en su lugar:
 ```
 games/<game>/    el juego: su código y cómo se juega
 experiments/     cada corrida: reglas, resultados crudos, lectura
-docs/            lo oficial y vigente: guide, lessons-learned, decisions/, figures/
+docs/            lo oficial y vigente: guide, lessons-learned, from-wager-to-jump-ahead, decisions/
 research/        material de trabajo: proposals, readings, theory, notes, reviews, legacy/
 CLAUDE.md        reglas para las sesiones de trabajo con IA
 ```
@@ -46,3 +46,4 @@ Los nombres de carpetas y archivos van en inglés; el contenido, en castellano.
 Continúa [`research-worlds-envs`](https://github.com/lucaspecina/research-worlds-envs) (proyecto WAGER). La
 investigación de allá que sirve acá está en [`research/`](research/), incluida la
 [propuesta de esta línea](research/proposals/2026-11-15-discovery-as-finding-a-shortcut.md).
+Qué cambió respecto de WAGER: [De WAGER a jump-ahead](docs/from-wager-to-jump-ahead.md).

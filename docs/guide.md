@@ -253,6 +253,8 @@ El costo del paso 2 no está medido. A ojo son decenas de dólares. Por eso prim
 - **Trampa**: dibujo que se repite mucho tiempo y después cambia.
 - **Juego salvaje**: regla elegida al azar, donde nadie sabe si hay atajo.
 
+**Otra forma de decirlo: dos reglas.** La **regla de generación** dice cómo avanza el sistema un paso; es simple y la IA la ve entera. La **regla de resultado** dice qué pasa lejos sin recorrer los pasos; es lo que la IA tiene que encontrar, y es lo que acá llamamos atajo. Antes, en WAGER, lo escondido era la regla de generación y la IA tenía que adivinarla mirando datos. Ahora lo escondido es la regla de resultado. Más en [De WAGER a jump-ahead](from-wager-to-jump-ahead.md).
+
 ## 17. Qué está decidido y qué falta
 
 **Decidido el 15 de noviembre de 2026:** la línea vive en un repo nuevo y público, `essence-of-discovery`. El primer juego se llama `jump-ahead`, por la frase de Wolfram ("can we jump ahead?").

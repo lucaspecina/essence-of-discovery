@@ -11,6 +11,9 @@ Lo que dejaron las etapas anteriores y sigue valiendo acá. Una página; el deta
    agente fallaba, había demasiadas explicaciones posibles (datos, ruido, incentivo, o falta de idea).
 3. **La esencia** (desde septiembre de 2026): juegos mínimos que aíslen una sola cosa.
 
+Qué cambió exactamente entre WAGER y el juego de ahora está en
+[De WAGER a jump-ahead](from-wager-to-jump-ahead.md).
+
 ## El método que se queda
 
 - **Puntaje mecánico, sin ninguna IA.**
