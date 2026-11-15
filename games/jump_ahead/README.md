@@ -56,4 +56,4 @@ para el agente, ni puntaje implementado.
   los modelos ya resuelven el banco clásico completo.
 
 Leído de resúmenes y partes, no a texto completo. El detalle y el resto de las fuentes están en el
-[documento de la propuesta](https://github.com/lucaspecina/research-worlds-envs/blob/main/docs/research/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md) (§8).
+[documento de la propuesta](../../biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md) (§8).

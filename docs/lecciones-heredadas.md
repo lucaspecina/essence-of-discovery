@@ -38,8 +38,6 @@ eso. Lo primero que tiene que entrar acá es un juego con su resultado.
 
 ## Dónde está la biblioteca
 
-En el repo anterior: `WIKI-INDAGACION.md` §7 (los clásicos sobre descubrimiento e insight, leídos
-enteros), `docs/lectura-de-fuentes.md` (registro de qué se leyó y cómo) y
-`docs/research/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md` (la propuesta de esta línea,
-con el trabajo previo de otros). Código reutilizable: `wager/agent/llm_client.py` y
-`wager/harness/kernel_proc.py`.
+En [`biblioteca/`](../biblioteca/): lecturas, fuentes y análisis traídos del repo anterior, con su índice.
+Lo demás (unos 155 documentos de pruebas de WAGER y el código) quedó allá. Código reutilizable cuando haga
+falta: `wager/agent/llm_client.py` y `wager/harness/kernel_proc.py`.

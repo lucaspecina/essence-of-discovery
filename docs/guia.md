@@ -5,8 +5,8 @@
 >
 > **Estado (15-nov-2026): es una propuesta en diseño. Todavía no se corrió nada con una IA.**
 >
-> El detalle, las fuentes y las críticas están en el [documento largo](https://github.com/lucaspecina/research-worlds-envs/blob/main/docs/research/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md), que quedó en el repo
-> anterior. Lucas edita y comenta esta guía en un Claude Doc privado; este archivo es la copia pública y se
+> El detalle, las fuentes y las críticas están en el [documento largo](../biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md).
+> Lucas edita y comenta esta guía en un Claude Doc privado; este archivo es la copia pública y se
 > actualiza desde ahí.
 
 ---

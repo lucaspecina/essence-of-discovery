@@ -24,6 +24,7 @@ Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguient
 - `games/<juego>/` — un juego: sus mundos, sus cuentas y sus experimentos.
 - `docs/guia.md` — la explicación para personas.
 - `docs/lecciones-heredadas.md` — lo que aprendimos antes y sigue valiendo.
+- `biblioteca/` — la investigación previa que sirve acá (lecturas, fuentes, análisis), congelada.
 - `DECISIONES.md` — una línea por decisión.
 - `CLAUDE.md` — las reglas para las sesiones de trabajo con IA.
 
@@ -38,6 +39,5 @@ Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguient
 ## De dónde viene
 
 Es la continuación de [`research-worlds-envs`](https://github.com/lucaspecina/research-worlds-envs)
-(proyecto WAGER), que queda como biblioteca: ahí están las lecturas, las fuentes y el
-[documento que propone esta línea](https://github.com/lucaspecina/research-worlds-envs/blob/main/docs/research/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md),
-con el trabajo previo de otros y las críticas.
+(proyecto WAGER). La investigación de allá que sirve acá está en [`biblioteca/`](biblioteca/), incluido el
+[documento que propone esta línea](biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md).
