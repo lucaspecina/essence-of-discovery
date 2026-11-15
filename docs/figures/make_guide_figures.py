@@ -4,7 +4,7 @@ Genera dos PNG:
   1) ...-guia-atajos-partida.png : como es una partida, en cuatro pasos (diagrama).
   2) ...-guia-atajos-pajar.png   : la medida 'ver o buscar' (ESQUEMA, no son datos).
 
-Uso:  python docs/img/figuras_guia.py [carpeta_de_salida]
+Uso:  python docs/figures/make_guide_figures.py [carpeta_de_salida]
 No usa ningun LLM ni datos externos. Solo matplotlib.
 """
 import sys
@@ -131,6 +131,6 @@ def fig_pajar(path):
 if __name__ == "__main__":
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
     out.mkdir(parents=True, exist_ok=True)
-    fig_partida(out / "partida.png")
-    fig_pajar(out / "pajar.png")
+    fig_partida(out / "round.png")
+    fig_pajar(out / "haystack.png")
     print("ok:", out)

@@ -11,7 +11,7 @@ PROPUESTA — NADA DE ESTO ESTÁ DECIDIDO NI CONSTRUIDO.**
 > Este documento responde las cuatro cosas. Regla anti-recencia: la cumbre es una lectura más; se pesa
 > contra todo lo anterior, no lo reemplaza.
 
-![Arriba: la regla 90 tiene atajo y la regla 30 no (que se sepa). Abajo: la misma nube de puntos, mirada de dos maneras.](../docs/img/atajos.png)
+![Arriba: la regla 90 tiene atajo y la regla 30 no (que se sepa). Abajo: la misma nube de puntos, mirada de dos maneras.](../../docs/figures/shortcuts.png)
 
 ## 0. En diez líneas
 
@@ -53,7 +53,7 @@ PROPUESTA — NADA DE ESTO ESTÁ DECIDIDO NI CONSTRUIDO.**
 | Anuncios en X (ARC-AGI-4, Chollet, Knoop, Kamradt, Stanley) | X no deja leer con herramientas; un lector secundario los leyó **con el Chrome de Lucas, que tiene la sesión abierta** (solo lectura de posts públicos) | segunda mano |
 | Cinco ensayos de Wolfram 2024–2026 | un lector secundario bajó el texto completo; **las citas usadas acá las comprobé yo contra ese texto** | citas verificadas; los ensayos enteros no los leí yo |
 | Trabajo previo para la idea propuesta | lectores secundarios (unas 90 búsquedas, 35 páginas); **cinco fuentes las abrí y comprobé yo** (§8, marcadas ✔) | el resto, segunda mano. Antes de afirmar novedad en un paper: auditoría a texto completo (ADR 0115) |
-| Los seis ejemplos de §5.4 | cuentas propias, sin LLM: [`2026-11-15-atajos-verificacion.py`](../games/jump_ahead/verificacion.py) | **verificados** (el script corre en segundos) |
+| Los seis ejemplos de §5.4 | cuentas propias, sin LLM: [`2026-11-15-atajos-verificacion.py`](../../games/jump_ahead/verify_examples.py) | **verificados** (el script corre en segundos) |
 
 ## 2. Dónde estamos parados
 
@@ -358,7 +358,7 @@ en el paso mil millones sin llegar hasta ahí.
 
 ### 5.4 Seis ejemplos, verificados con cuentas (sin LLM)
 
-Todo sale de [`2026-11-15-atajos-verificacion.py`](../games/jump_ahead/verificacion.py).
+Todo sale de [`2026-11-15-atajos-verificacion.py`](../../games/jump_ahead/verify_examples.py).
 
 | Juego | El camino obvio | El atajo | Lo que dio la cuenta |
 |---|---|---|---|

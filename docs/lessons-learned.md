@@ -36,8 +36,8 @@ Son observaciones de modelos viejos; no hay que repetirlas como hechos sobre "lo
 Tres reformulaciones entre agosto y noviembre de 2026, y ningún experimento. Un repo limpio no arregla
 eso. Lo primero que tiene que entrar acá es un juego con su resultado.
 
-## Dónde está la biblioteca
+## Dónde está la investigación previa
 
-En [`biblioteca/`](../biblioteca/): lecturas, fuentes y análisis traídos del repo anterior, con su índice.
-Lo demás (unos 155 documentos de pruebas de WAGER y el código) quedó allá. Código reutilizable cuando haga
-falta: `wager/agent/llm_client.py` y `wager/harness/kernel_proc.py`.
+En [`research/`](../research/): lecturas, teoría, hallazgos, notas y revisiones traídas del repo anterior,
+con su índice. Lo demás (unos 155 documentos de pruebas de WAGER y el código) quedó allá. Código
+reutilizable cuando haga falta: `wager/agent/llm_client.py` y `wager/harness/kernel_proc.py`.

@@ -9,7 +9,7 @@ resultado sobre modelos.
 
 ## Para entender de qué se trata
 
-Leé la [guía en llano](docs/guia.md). Son 7 minutos, sin jerga.
+Leé la [guía en llano](docs/guide.md). Son 7 minutos, sin jerga.
 
 ## Los juegos
 
@@ -21,12 +21,15 @@ Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguient
 
 ## Cómo está ordenado
 
-- `games/<juego>/` — un juego: sus mundos, sus cuentas y sus experimentos.
-- `docs/guia.md` — la explicación para personas.
-- `docs/lecciones-heredadas.md` — lo que aprendimos antes y sigue valiendo.
-- `biblioteca/` — la investigación previa que sirve acá (lecturas, fuentes, análisis), congelada.
-- `DECISIONES.md` — una línea por decisión.
-- `CLAUDE.md` — las reglas para las sesiones de trabajo con IA.
+```
+games/<game>/      un juego: código, cuentas y experimentos
+docs/              explicaciones para personas (guide, lessons-learned, figures)
+research/          investigación: readings, theory, findings, notes, proposals, reviews
+DECISIONS.md       una línea por decisión
+CLAUDE.md          reglas para las sesiones de trabajo con IA
+```
+
+Los nombres de carpetas y archivos van en inglés; el contenido, en castellano.
 
 ## Reglas de la casa
 
@@ -38,6 +41,6 @@ Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguient
 
 ## De dónde viene
 
-Es la continuación de [`research-worlds-envs`](https://github.com/lucaspecina/research-worlds-envs)
-(proyecto WAGER). La investigación de allá que sirve acá está en [`biblioteca/`](biblioteca/), incluido el
-[documento que propone esta línea](biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md).
+Continúa [`research-worlds-envs`](https://github.com/lucaspecina/research-worlds-envs) (proyecto WAGER). La
+investigación de allá que sirve acá está en [`research/`](research/), incluida la
+[propuesta de esta línea](research/proposals/2026-11-15-discovery-as-finding-a-shortcut.md).

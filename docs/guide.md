@@ -5,7 +5,7 @@
 >
 > **Estado (15-nov-2026): es una propuesta en diseño. Todavía no se corrió nada con una IA.**
 >
-> El detalle, las fuentes y las críticas están en el [documento largo](../biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md).
+> El detalle, las fuentes y las críticas están en el [documento largo](../research/proposals/2026-11-15-discovery-as-finding-a-shortcut.md).
 > Lucas edita y comenta esta guía en un Claude Doc privado; este archivo es la copia pública y se
 > actualiza desde ahí.
 
@@ -46,7 +46,7 @@ atajo.
 Stephen Wolfram, un físico que estudia estos sistemas hace cuarenta años, dice que la esencia de
 descubrir es eso: encontrar un atajo donde parecía que había que hacer toda la cuenta.
 
-![Dos sistemas simples, uno con atajo y otro sin atajo conocido; y los mismos puntos vistos desde dos ángulos](img/atajos.png)
+![Dos sistemas simples, uno con atajo y otro sin atajo conocido; y los mismos puntos vistos desde dos ángulos](figures/shortcuts.png)
 
 *Arriba: dos sistemas con reglas igual de simples. El de la izquierda dibuja un patrón ordenado y tiene
 atajo. Para el de la derecha nadie encontró uno en cuarenta años. Abajo, la misma idea de otra forma: los
@@ -55,7 +55,7 @@ justo. Muchas veces, encontrar el atajo es encontrar desde dónde mirar.*
 
 ## 4. Una partida, paso a paso
 
-![Una partida en cuatro pasos: recibe, experimenta, entrega, se corrige](img/partida.png)
+![Una partida en cuatro pasos: recibe, experimenta, entrega, se corrige](figures/round.png)
 
 1. **Recibe** la regla completa y una pregunta lejana. Por ejemplo: "¿cómo va a estar la casilla 7 en el
    paso un trillón?".
@@ -119,7 +119,7 @@ La diferencia no está en si la encontrás. Está en **cuánto más te cuesta cu
 Nosotros podemos agrandar el pajar a voluntad: el mismo atajo, escondido entre más opciones. Y medimos
 cuánto trabajo le costó a la IA: cuánto razonó, cuántos experimentos hizo, cuánto tiempo de máquina usó.
 
-![Esquema: el esfuerzo de un buscador a ciegas sube con el pajar; el de una IA que ve casi no sube](img/pajar.png)
+![Esquema: el esfuerzo de un buscador a ciegas sube con el pajar; el de una IA que ve casi no sube](figures/haystack.png)
 
 - Si el esfuerzo de la IA **casi no sube**, lo ve.
 - Si **sube como el del buscador a ciegas**, lo busca.
@@ -212,5 +212,5 @@ El costo del paso 2 no está medido. A ojo son decenas de dólares. Por eso prim
 
 ---
 
-*Figuras: [`img/figura_atajos.py`](img/figura_atajos.py) y [`img/figuras_guia.py`](img/figuras_guia.py). Cuentas de los
-ejemplos: [`games/jump_ahead/verificacion.py`](../games/jump_ahead/verificacion.py).*
+*Figuras: [`figures/make_shortcuts_figure.py`](figures/make_shortcuts_figure.py) y [`figures/make_guide_figures.py`](figures/make_guide_figures.py). Cuentas de los
+ejemplos: [`games/jump_ahead/verify_examples.py`](../games/jump_ahead/verify_examples.py).*

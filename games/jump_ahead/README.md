@@ -9,7 +9,7 @@ contra la respuesta exacta, sin ninguna IA de juez. Sin atajo es imposible; con 
 atajo en pajares cada vez más grandes y se mira cuánto crece su esfuerzo, contra un buscador a ciegas.
 También cuántas veces cree ver un atajo que no está (mundos sin atajo y trampas).
 
-La explicación completa, con figuras, está en la [guía](../../docs/guia.md).
+La explicación completa, con figuras, está en la [guía](../../docs/guide.md).
 
 ## Estado (15-nov-2026)
 
@@ -17,7 +17,7 @@ La explicación completa, con figuras, está en la [guía](../../docs/guia.md).
 
 ```
 pip install -r requirements.txt
-python games/jump_ahead/verificacion.py
+python games/jump_ahead/verify_examples.py
 ```
 
 Corre en segundos y comprueba, entre otras cosas:
@@ -56,4 +56,4 @@ para el agente, ni puntaje implementado.
   los modelos ya resuelven el banco clásico completo.
 
 Leído de resúmenes y partes, no a texto completo. El detalle y el resto de las fuentes están en el
-[documento de la propuesta](../../biblioteca/2026-11-15-reformulacion-descubrir-es-encontrar-un-atajo.md) (§8).
+[documento de la propuesta](../../research/proposals/2026-11-15-discovery-as-finding-a-shortcut.md) (§8).

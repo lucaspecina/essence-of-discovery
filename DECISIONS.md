@@ -7,7 +7,8 @@ Una línea por decisión: fecha — decisión — razón. Las pendientes van al 
 - 2026-11-15 — El titular de `jump-ahead` no es la pregunta "¿ve o busca?" (ya la hicieron otros con una IA de juez) sino medirla sin juez, con el atajo plantado — resultado de la búsqueda de trabajo previo.
 - 2026-11-15 — El esfuerzo se mide solo sobre partidas resueltas — una IA que se rinde también trabaja poco.
 - 2026-11-15 — El tamaño del pajar es "uno de cada cuántos intentos a ciegas funciona", no el total de opciones — varias opciones destapan el mismo atajo.
-- 2026-11-15 — Se trae la investigación previa relevante a `biblioteca/` (27 documentos, congelados, elegidos por título) — pedido de Lucas: reutilizar lecturas, fuentes y análisis; la regla "sin teoría antes del primer resultado" vale para documentos nuevos, no para lo heredado.
+- 2026-11-15 — Se trae la investigación previa relevante a `research/` (27 documentos, congelados, elegidos por título) — pedido de Lucas: reutilizar lecturas, fuentes y análisis; la regla "sin teoría antes del primer resultado" vale para documentos nuevos, no para lo heredado.
+- 2026-11-15 — Nombres de carpetas y archivos en inglés y un lugar por tipo de cosa (`games/`, `docs/`, `research/` con seis subcarpetas); el contenido sigue en castellano — pedido de Lucas: buenas prácticas de organización.
 
 ## Pendientes
 
