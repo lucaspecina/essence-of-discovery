@@ -16,7 +16,7 @@ La explicación completa, con figuras, está en la [guía](../../docs/guide.md).
 **Hecho, sin IA:** seis ejemplos de mundos verificados con cuentas. Para reproducirlos:
 
 ```
-pip install -r requirements.txt
+pip install numpy matplotlib
 python games/jump_ahead/verify_examples.py
 ```
 
@@ -43,6 +43,20 @@ para el agente, ni puntaje implementado.
 | No resuelve ni con la idea nombrada | El juego está mal armado | Arreglar el juego |
 | Resuelve, y su esfuerzo crece como el del buscador a ciegas | Busca | Resultado |
 | Resuelve, y su esfuerzo casi no crece | Ve (si no era un truco de manual) | Resultado |
+
+## Decisiones de diseño
+
+- El titular no es la pregunta "¿ve o busca?" (ya la hicieron otros, con una IA de juez). Es medirla sin
+  juez, con el atajo plantado.
+- El esfuerzo se mide solo sobre partidas resueltas: una IA que se rinde también trabaja poco.
+- El tamaño del pajar es "uno de cada cuántos intentos a ciegas funciona", no el total de opciones, porque
+  varias opciones destapan el mismo atajo.
+
+## Pendientes
+
+- Traer del repo anterior, para la primera prueba, el cliente de modelos y el proceso que ejecuta el código
+  del agente (unas 400 líneas).
+- Leer a texto completo el trabajo previo más cercano antes de afirmar novedad.
 
 ## Lo más cercano que hicieron otros
 

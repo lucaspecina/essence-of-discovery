@@ -1,6 +1,6 @@
 # CLAUDE.md — essence-of-discovery
 
-Al arrancar: leé `README.md` (la pregunta y el estado) y `DECISIONS.md`. Si no conocés el proyecto,
+Al arrancar: leé `README.md` (la pregunta y el estado) y `docs/decisions/`. Si no conocés el proyecto,
 `docs/guide.md`. El repo anterior (`research-worlds-envs`, WAGER) es biblioteca de solo lectura: sus reglas
 y su vocabulario (vicios, saltos, perillas) **no** aplican acá.
 
@@ -21,11 +21,12 @@ y su vocabulario (vicios, saltos, perillas) **no** aplican acá.
 
 - **Nombres de carpetas y archivos en inglés**, en minúsculas con guiones (`2026-11-15-short-name.md`);
   código en `snake_case`. El contenido de los documentos va en castellano llano.
-- Dónde va cada cosa: código y experimentos de un juego en `games/<game>/` (cada experimento en
-  `experiments/<date-name>/`: reglas, crudos, lectura de diez líneas); explicaciones para personas en
-  `docs/`; investigación en `research/` (`readings/` lo leído, `theory/` marcos, `findings/` resultados,
-  `notes/` notas de trabajo, `proposals/` propuestas, `reviews/` opiniones externas).
-- Decisiones: una línea en `DECISIONS.md` (fecha — decisión — razón). No hay sistema de ADRs.
+- En la raíz, solo lo oficial. Dónde va cada cosa: código de un juego en `games/<game>/`; corridas en
+  `experiments/<date-name>/` (`rules.md` antes de correr, `raw/`, `reading.md`); lo vigente en `docs/`;
+  material de trabajo en `research/` (`proposals/ readings/ theory/ notes/ reviews/`; lo heredado, en
+  `legacy/`, no se edita).
+- Decisiones: las que cambian el rumbo, un archivo corto en `docs/decisions/`. Las de diseño de un juego,
+  en su README. El resto queda en el historial de git. No hay sistema de ADRs.
 - Sin documentos de teoría antes del primer resultado. Topes: README una página, este archivo 40 líneas.
 - Todo cierre a Lucas termina con dos cosas: qué se aprendió y qué límite tiene, y la lista de pendientes.
 - Python 3.13.

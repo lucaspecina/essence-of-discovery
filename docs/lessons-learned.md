@@ -38,6 +38,6 @@ eso. Lo primero que tiene que entrar acá es un juego con su resultado.
 
 ## Dónde está la investigación previa
 
-En [`research/`](../research/): lecturas, teoría, hallazgos, notas y revisiones traídas del repo anterior,
-con su índice. Lo demás (unos 155 documentos de pruebas de WAGER y el código) quedó allá. Código
+En [`research/legacy/`](../research/legacy/): lecturas, teoría, hallazgos, notas y revisiones traídas del
+repo anterior. El índice está en [`research/`](../research/). Lo demás (unos 155 documentos de pruebas de WAGER y el código) quedó allá. Código
 reutilizable cuando haga falta: `wager/agent/llm_client.py` y `wager/harness/kernel_proc.py`.

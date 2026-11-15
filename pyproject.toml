@@ -1,0 +1,6 @@
+[project]
+name = "essence-of-discovery"
+version = "0.0.1"
+description = "Minimal games to measure whether an AI discovers or just tries until something works."
+requires-python = ">=3.13"
+dependencies = ["numpy", "matplotlib"]
