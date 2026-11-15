@@ -199,6 +199,31 @@ De todos leí el resumen oficial; de tres abrí partes del texto. Ninguno está 
 
 **En limpio.** No es "nadie pensó en esto". Es **"nadie lo midió limpio"**: sin IA de juez, con juegos armados por nosotros, con el atajo plantado. Y las trampas: de eso no apareció nada.
 
+### Para leer: lo esencial
+
+**De dónde sale la idea**
+
+- [Wolfram, charla en la cumbre de ARC](https://www.youtube.com/watch?v=kdaGkpIUZyY): descubrir es encontrar atajos.
+- [Wolfram, "Can AI Solve Science?"](https://writings.stephenwolfram.com/2024/03/can-ai-solve-science/): la misma idea, escrita.
+- [Zenil y otros, 2011](https://arxiv.org/abs/1104.3421): nuestro experimento, antes de que existieran estas IAs.
+
+**La discusión: ¿las IAs dan el salto?**
+
+- Zahavy, "LLMs can't jump" (ICML 2026): dice que no. Falta conseguir el enlace.
+- [Balani y Panda, "LLMs Don't Pay for the Jump"](https://arxiv.org/abs/2608.14397): para cambiar de idea, equivocarse tiene que costar.
+- [ARC-AGI-3](https://arcprize.org/arc-agi/3): juegos sin instrucciones; de menos de 1% a 81% en ocho meses.
+
+**Los que prueban algo muy cercano**
+
+- [DeepMind, atajos en máquinas de juguete](https://arxiv.org/abs/2610.22603): el más parecido.
+- ["¿Creatividad o fuerza bruta?"](https://arxiv.org/abs/2505.10844): nuestra misma pregunta, con otra IA de juez.
+- ["¿Más tokens es racional?"](https://arxiv.org/abs/2602.10329): agranda las opciones y mira la estrategia.
+- [AlgoTune](https://arxiv.org/abs/2507.15887): los modelos ajustan, pero no encuentran ideas nuevas.
+
+**Sobre cómo medir**
+
+- ["La ilusión de pensar"](https://arxiv.org/abs/2506.06941): el esfuerzo baja cuando el modelo se rinde.
+
 ## 14. El plan
 
 | Paso | Qué | Cuánto | Estado |
