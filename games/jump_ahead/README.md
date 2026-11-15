@@ -39,6 +39,10 @@ Corre en segundos y comprueba, entre otras cosas:
 En los dos, la regla de resultado coincide con la cuenta larga en los pasos 0 a 3.000, y las respuestas del
 paso un trillón salen en milisegundos.
 
+Los dos juegos se pueden tocar en una página: <https://claude.ai/artifact/1w2gYRZUJRW8Wk27LtxsaM> (enlace
+privado de Lucas; su fuente es [`docs/first-two-games.html`](../../docs/first-two-games.html)). Lucas puede
+editar el texto ahí mismo: si la página cambia, hay que traer la versión nueva al repo.
+
 **No hecho:** ninguna partida con una IA. No hay todavía computadora de pruebas para el agente. El puntaje
 está implementado (`minigames/base.py`).
 

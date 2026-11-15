@@ -1,0 +1,541 @@
+<title>Los dos primeros juegos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style id="css">
+/* Layout: una columna de lectura; cada juego es un bloque con su tablero para tocar.
+   Fuente: docs/first-two-games.html en el repo essence-of-discovery. El texto editado vive en #state. */
+:root {
+  --bg: #f7f8fa; --surface: #ffffff; --fg: #10151c; --muted: #55606e; --line: #d9dee6;
+  --accent: #2a78d6; --accent-soft: #e3eefb; --warm: #d9541f; --cell: #10151c; --off: #e6eaf0;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1318; --surface: #171c23; --fg: #e9edf2; --muted: #a3aebb; --line: #2b333d;
+  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1318; --surface: #171c23; --fg: #e9edf2; --muted: #a3aebb; --line: #2b333d;
+  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
+.page { max-width: 44rem; margin: 0 auto; padding-block: 2.5rem 4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 2.6rem; }
+.page > * { min-width: 0; max-width: 100%; }
+section, header { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+p, li, figcaption, summary { overflow-wrap: anywhere; }
+h1 { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-size: 1.45rem; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--font-display); font-size: 1.12rem; line-height: 1.25; margin: 0.4rem 0 0; text-wrap: balance; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.lead { font-size: 1.15rem; color: var(--muted); }
+.kicker { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.status { border: 1px solid var(--line); border-left: 4px solid var(--warm); background: var(--surface); padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.95rem; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--muted); }
+.sechead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+button { font: inherit; font-size: 0.92rem; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 6px; padding: 0.45rem 0.9rem; cursor: pointer; }
+button.quiet { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+button.pick[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+button:focus-visible, input:focus-visible, summary:focus-visible, [contenteditable]:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+figure { margin: 0.3rem 0; display: flex; flex-direction: column; gap: 0.7rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; min-width: 0; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; font-size: 0.92rem; }
+.ctrl input[type=text] { font: inherit; font-size: 0.95rem; font-variant-numeric: tabular-nums; flex: 1 1 12rem; min-width: 0; padding: 0.42rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.ctrl input[type=range] { flex: 1 1 12rem; min-width: 0; accent-color: var(--accent); }
+.out { font-size: 0.97rem; }
+.out b { font-variant-numeric: tabular-nums; }
+.pieces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+.piece { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.85rem; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.94rem; }
+.piece b { font-family: var(--font-display); font-size: 1.02rem; }
+.piece span { color: var(--muted); }
+.rows { display: flex; flex-direction: column; gap: 5px; font-variant-numeric: tabular-nums; }
+.row { display: flex; align-items: center; gap: 6px; }
+.row .lbl { width: 4.6rem; font-size: 0.85rem; color: var(--muted); flex: none; }
+.sq { width: 1.5rem; height: 1.5rem; border-radius: 4px; background: var(--off); flex: none; display: inline-grid; place-items: center; font-size: 0.8rem; color: var(--muted); }
+.sq.on { background: var(--cell); }
+.row.same .lbl { color: var(--warm); font-weight: 600; }
+.cases { display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; font-size: 0.9rem; color: var(--muted); }
+.case { display: flex; align-items: center; gap: 5px; }
+canvas { width: 100%; height: auto; display: block; border-radius: 4px; background: var(--off); image-rendering: pixelated; }
+.strip { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.88rem; color: var(--muted); }
+.verdict { font-weight: 600; }
+.verdict.yes { color: var(--accent); } .verdict.no { color: var(--warm); }
+.scale { position: relative; height: 2.6rem; }
+.scale .track { position: absolute; left: 0; right: 0; top: 0.5rem; height: 0.5rem; border-radius: 0.25rem; background: var(--off); }
+.scale .mark { position: absolute; top: 0.15rem; width: 0.2rem; height: 1.2rem; background: var(--accent); border-radius: 2px; transform: translateX(-50%); }
+.scale .tick { position: absolute; top: 1.5rem; font-size: 0.78rem; color: var(--muted); transform: translateX(-50%); font-variant-numeric: tabular-nums; white-space: nowrap; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.92rem; }
+summary { cursor: pointer; font-weight: 600; }
+pre { margin: 0.6rem 0 0; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+[data-edit][contenteditable="true"] { outline: 1px dashed var(--accent); outline-offset: 3px; border-radius: 3px; background: var(--accent-soft); }
+@media (max-width: 560px) { .pieces { grid-template-columns: 1fr; } .sq { width: 1.25rem; height: 1.25rem; } .row .lbl { width: 4rem; } }
+</style>
+<script type="application/json" id="state">{"edits":{}}</script>
+<template id="tpl">
+<div class="page">
+
+<header>
+  <div class="kicker">jump-ahead · mini-juegos</div>
+  <h1 data-edit="title">Los dos primeros juegos</h1>
+  <p class="lead" data-edit="lead">Qué recibe la IA, qué tiene que encontrar y cómo la calificamos. Con dos juegos que podés tocar.</p>
+  <div class="status" data-edit="status"><b>Los dos juegos están armados y verificados con cuentas.</b> Todavía ninguna IA los jugó.</div>
+  <div class="bar" id="editbar" hidden>
+    <button type="button" id="edit-start">Editar texto</button>
+    <button type="button" id="edit-save" hidden>Guardar cambios</button>
+    <button type="button" class="quiet" id="edit-cancel" hidden>Cancelar</button>
+    <span id="edit-note" role="status"></span>
+  </div>
+</header>
+
+<section>
+  <div class="sechead"><h2 data-edit="a-h">Las tres piezas de un juego</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="a-1">Todos los juegos tienen la misma forma. Son tres piezas.</p>
+  <div class="pieces">
+    <div class="piece"><b data-edit="a-p1h">1. Una regla de generación</b><span data-edit="a-p1">Dice cómo cambia una fila de casillas de un paso al siguiente. Es corta, y la IA la ve entera.</span></div>
+    <div class="piece"><b data-edit="a-p2h">2. Una pregunta lejana</b><span data-edit="a-p2">Por ejemplo: ¿cómo va a estar la casilla 1 en el paso un trillón? Calculando paso por paso no se llega.</span></div>
+    <div class="piece"><b data-edit="a-p3h">3. Una regla de resultado</b><span data-edit="a-p3">Dice qué pasa lejos sin recorrer los pasos del medio. No se la damos: es lo que la IA tiene que encontrar.</span></div>
+  </div>
+  <p data-edit="a-2">Nosotros sí conocemos la regla de resultado. Con ella calculamos la respuesta exacta, y con eso calificamos.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="b-h">Juego 1: la luz que da vueltas</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="b-1">Hay 7 casillas en ronda: la última es vecina de la primera. Una sola está prendida.</p>
+  <p data-edit="b-2">La <b>regla de generación</b> es una línea: cada casilla copia a su vecina de la izquierda. Eso hace que la luz se corra un lugar por paso.</p>
+  <figure>
+    <div class="rows" id="g1-rows" aria-live="polite"></div>
+    <div class="ctrl">
+      <button type="button" id="g1-step">Un paso</button>
+      <button type="button" class="quiet" id="g1-reset">Volver a empezar</button>
+    </div>
+    <figcaption data-edit="b-cap">Apretá «Un paso» varias veces y mirá qué pasa al llegar al paso 7.</figcaption>
+  </figure>
+  <p data-edit="b-3">En el paso 7 la fila vuelve a estar igual que al principio, y desde ahí se repite todo. Esa es la <b>regla de resultado</b> de este juego: todo se repite cada 7 pasos, así que solo importa lo que sobra al dividir el paso por 7.</p>
+  <figure>
+    <div class="ctrl">
+      <label for="g1-far">Probala con un paso lejano:</label>
+      <input type="text" id="g1-far" inputmode="numeric" value="1000000000000000000" aria-describedby="g1-out">
+      <button type="button" id="g1-jump">Saltar</button>
+    </div>
+    <div class="out" id="g1-out" aria-live="polite"></div>
+    <div class="rows" id="g1-far-row"></div>
+  </figure>
+  <p data-edit="b-4">Este juego es fácil a propósito. Sirve para ver las piezas, y de control: si una IA falla acá, lo que está roto es nuestro programa, no la IA.</p>
+  <details>
+    <summary>Ver el texto exacto que recibe la IA</summary>
+<pre>Sistema: una fila de 7 casillas en anillo (la última es vecina de la primera).
+Las casillas se numeran desde 0. Cada una está prendida (1) o apagada (0).
+
+Regla (se aplica a todas las casillas a la vez, una vez por paso):
+  cada casilla pasa a valer lo que valía su vecina de la izquierda.
+
+Paso 0:
+  1000000
+
+Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté prendida:
+  - casilla 0 en el paso 1000000000000000000
+  - casilla 1 en el paso 1000000000000000000
+  ... (y así hasta la casilla 6)</pre>
+  </details>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="c-h">Cómo se califica</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="c-1">La IA no contesta solo sí o no. Dice cuán segura está de que la casilla está prendida. Eso permite tratar distinto al que sabe, al que duda y al que inventa.</p>
+  <figure>
+    <div class="ctrl">
+      <label for="score-p">En el juego 1, la casilla 1 está prendida. La IA dice estar segura en un:</label>
+      <input type="range" id="score-p" min="0" max="100" step="1" value="100">
+    </div>
+    <div class="out" id="score-out" aria-live="polite"></div>
+    <div class="scale" aria-hidden="true">
+      <div class="track"></div>
+      <div class="mark" id="score-mark"></div>
+      <span class="tick" style="left:0%">−3</span><span class="tick" style="left:25%">−2</span><span class="tick" style="left:50%">−1</span><span class="tick" style="left:75%">0</span><span class="tick" style="left:100%">+1</span>
+    </div>
+  </figure>
+  <p data-edit="c-2">Mové la barra y fijate en tres puntos. Con 100% y acertando, saca +1. Con 50%, que es decir «no sé», saca 0. Con 0%, o sea segura de lo contrario, saca −3. Equivocarse con seguridad cuesta mucho más que admitir que no se sabe.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="d-h">Juego 2: las vecinas distintas</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="d-1">Ahora hay 101 casillas en ronda, y varias prendidas al empezar.</p>
+  <p data-edit="d-2">La <b>regla de generación</b> también es una línea: una casilla queda prendida si sus dos vecinas eran distintas entre sí. Si eran iguales, queda apagada.</p>
+  <div class="cases" aria-label="Tres ejemplos de la regla">
+    <span class="case"><span class="sq on"></span><span class="sq">?</span><span class="sq"></span> → <span class="sq on"></span> distintas: prendida</span>
+    <span class="case"><span class="sq on"></span><span class="sq">?</span><span class="sq on"></span> → <span class="sq"></span> iguales: apagada</span>
+    <span class="case"><span class="sq"></span><span class="sq">?</span><span class="sq"></span> → <span class="sq"></span> iguales: apagada</span>
+  </div>
+  <figure>
+    <canvas id="g2-canvas" width="606" height="360" role="img" aria-label="Los primeros pasos del juego 2: un dibujo de triángulos desordenados que no se repite"></canvas>
+    <div class="ctrl">
+      <button type="button" id="g2-step">Un paso</button>
+      <button type="button" id="g2-run">40 pasos más</button>
+      <button type="button" class="quiet" id="g2-reset">Volver a empezar</button>
+      <span class="out" id="g2-count" aria-live="polite"></span>
+    </div>
+    <figcaption data-edit="d-cap">Cada fila es un paso. Arriba está el paso 0.</figcaption>
+  </figure>
+  <p data-edit="d-3">A diferencia del juego 1, acá el dibujo no vuelve a empezar. Lo dejamos correr 200.000 pasos y la fila no se repitió nunca. Esperar a que se repita no sirve.</p>
+
+  <h3 data-edit="d-h2">La regla de resultado, escondida a simple vista</h3>
+  <p data-edit="d-4">Sin embargo hay un orden. Después de 2 pasos, cada casilla depende solo de las dos casillas que están a distancia 2. Después de 4 pasos, de las que están a distancia 4. Después de 8, a distancia 8. Y así con 16, 32, 64...</p>
+  <p data-edit="d-5">O sea: dar 8 pasos de a uno da lo mismo que aplicar la regla una sola vez, mirando 8 casillas más lejos. Comprobalo:</p>
+  <figure>
+    <div class="ctrl" role="group" aria-label="Cantidad de pasos a comparar">
+      <span>Comparar con</span>
+      <button type="button" class="quiet pick" data-d="1">1</button>
+      <button type="button" class="quiet pick" data-d="2">2</button>
+      <button type="button" class="quiet pick" data-d="3">3</button>
+      <button type="button" class="quiet pick" data-d="4">4</button>
+      <button type="button" class="quiet pick" data-d="8">8</button>
+      <button type="button" class="quiet pick" data-d="16">16</button>
+      <span>pasos</span>
+    </div>
+    <div class="strip"><span id="g2-a-lbl"></span><canvas id="g2-a" width="606" height="18" role="img" aria-label="La fila después de dar los pasos de a uno"></canvas></div>
+    <div class="strip"><span id="g2-b-lbl"></span><canvas id="g2-b" width="606" height="18" role="img" aria-label="La fila después de aplicar la regla una vez a esa distancia"></canvas></div>
+    <div class="verdict" id="g2-verdict" aria-live="polite"></div>
+  </figure>
+  <p data-edit="d-6">Con 3 no funciona: solo vale para 1, 2, 4, 8, 16 y los que siguen duplicando. Pero alcanza, porque cualquier número se arma sumando de esos. Para llegar al paso un trillón hacen falta 24 saltos, en vez de un trillón de pasos.</p>
+  <figure>
+    <div class="ctrl">
+      <label for="g2-far">Saltar al paso:</label>
+      <input type="text" id="g2-far" inputmode="numeric" value="1000000000000000000" aria-describedby="g2-out">
+      <button type="button" id="g2-jump">Saltar</button>
+    </div>
+    <div class="out" id="g2-out" aria-live="polite"></div>
+    <div class="strip"><span>Así queda la fila en ese paso:</span><canvas id="g2-far-row" width="606" height="18" role="img" aria-label="La fila en el paso pedido"></canvas></div>
+    <figcaption data-edit="d-cap2">Contando de a un paso, a mil millones de pasos por segundo, llegar al paso un trillón llevaría unos 31 años.</figcaption>
+  </figure>
+  <p data-edit="d-7">Eso es lo que una IA tendría que descubrir en este juego. Nadie se lo dice: tiene la regla de una línea, una computadora chica para probar, y la pregunta.</p>
+  <details>
+    <summary>Ver el texto exacto que recibe la IA</summary>
+<pre>Sistema: una fila de 101 casillas en anillo (la última es vecina de la primera).
+Las casillas se numeran desde 0. Cada una está prendida (1) o apagada (0).
+
+Regla (se aplica a todas las casillas a la vez, una vez por paso):
+  una casilla queda prendida si sus dos vecinas (izquierda y derecha) eran
+  distintas entre sí; si eran iguales, queda apagada.
+
+Paso 0:
+  00011000000000000100000000000000000000001110000000000000000000000000000000000100000000000010000000000
+
+Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté prendida:
+  - casilla 0 en el paso 1000000000000000000
+  - casilla 5 en el paso 1000000000000000000
+  ... (y así con las casillas 13, 29, 50, 64, 88 y 100)</pre>
+  </details>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="e-h">Qué muestran los dos juntos</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <ul>
+    <li data-edit="e-1">La forma es siempre la misma: regla a la vista, pregunta lejana, regla de resultado por encontrar.</li>
+    <li data-edit="e-2">Lo que cambia es cuán escondida está la regla de resultado. En el juego 1 salta a la vista. En el 2 hay que buscarla.</li>
+    <li data-edit="e-3">Un aviso sobre el juego 2: su regla de resultado está en los libros, y una IA puede conocerla de memoria. Por eso los juegos que siguen la disfrazan. Y por eso habrá también juegos sin ninguna regla de resultado, para ver si la IA inventa una.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="f-h">Cómo usar esta página</h2></div>
+  <ul>
+    <li data-edit="f-1">Tocá los botones tranquilo. «Volver a empezar» deja todo como estaba.</li>
+    <li data-edit="f-2">Para cambiar un texto: «Editar texto» arriba de todo, escribís, y «Guardar cambios». La página queda guardada con tu versión.</li>
+    <li data-edit="f-3">Para preguntar o sugerir algo: el botón «Preguntar o sugerir» de cada parte, o el modo de comentarios de Claude.</li>
+  </ul>
+</section>
+
+</div>
+</template>
+<div id="app"></div>
+<script id="code">
+(function () {
+  "use strict";
+
+  /*LOGIC-START*/
+  // Juego 1: cada casilla copia a su vecina de la izquierda.
+  function g1Start() { return [1, 0, 0, 0, 0, 0, 0]; }
+  function g1Step(row) {
+    var n = row.length, out = new Array(n);
+    for (var i = 0; i < n; i++) out[i] = row[(i - 1 + n) % n];
+    return out;
+  }
+  // Regla de resultado del juego 1: solo importa el resto de dividir por el largo.
+  function g1Jump(row, steps) {
+    var n = row.length, k = Number(steps % BigInt(n)), out = new Array(n);
+    for (var i = 0; i < n; i++) out[i] = row[(((i - k) % n) + n) % n];
+    return out;
+  }
+  // Juego 2: una casilla queda prendida si sus dos vecinas eran distintas.
+  var G2_N = 101, G2_LIT = [3, 4, 17, 40, 41, 42, 77, 90], G2_CELLS = [0, 5, 13, 29, 50, 64, 88, 100];
+  function g2Start() {
+    var s = new Array(G2_N).fill(0);
+    G2_LIT.forEach(function (i) { s[i] = 1; });
+    return s;
+  }
+  // La misma regla, pero mirando a las casillas que están a distancia d.
+  function g2FarStep(row, d) {
+    var n = row.length, out = new Array(n);
+    d = ((d % n) + n) % n;
+    for (var i = 0; i < n; i++) out[i] = row[(i - d + n) % n] ^ row[(i + d) % n];
+    return out;
+  }
+  function g2Step(row) { return g2FarStep(row, 1); }
+  // Regla de resultado del juego 2: el paso se arma con saltos de 1, 2, 4, 8...
+  function g2Jump(row, steps) {
+    var n = row.length, d = 1, k = 0, jumps = [];
+    while (steps > 0n) {
+      if (steps & 1n) { row = g2FarStep(row, d); jumps.push(k); }
+      steps >>= 1n; d = (d * 2) % n; k++;
+    }
+    return { row: row, jumps: jumps };
+  }
+  function score(p, truth) { return 1 - 4 * (p - truth) * (p - truth); }
+  function sameRow(a, b) { for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; }
+  /*LOGIC-END*/
+
+  if (typeof document === "undefined") return;
+
+  // ---------- la página se dibuja a partir de la plantilla y del estado ----------
+  var app = document.getElementById("app");
+  app.appendChild(document.getElementById("tpl").content.cloneNode(true));
+  function $(id) { return document.getElementById(id); }
+  function token(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  var state = { edits: {} };
+  try { state = JSON.parse($("state").textContent) || state; } catch (e) { /* estado vacío */ }
+  if (!state.edits) state.edits = {};
+
+  var ALLOWED = { B: 1, STRONG: 1, EM: 1, I: 1, CODE: 1, BR: 1 };
+  function sanitize(html) {
+    var box = document.createElement("div");
+    box.innerHTML = html;
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (k) {
+        if (k.nodeType === 1) {
+          walk(k);
+          if (!ALLOWED[k.tagName]) { while (k.firstChild) node.insertBefore(k.firstChild, k); node.removeChild(k); }
+          else { while (k.attributes.length) k.removeAttribute(k.attributes[0].name); }
+        } else if (k.nodeType !== 3) { node.removeChild(k); }
+      });
+    })(box);
+    return box.innerHTML.replace(/&nbsp;/g, " ").trim();
+  }
+
+  var editable = Array.prototype.slice.call(app.querySelectorAll("[data-edit]"));
+  var defaults = {};
+  editable.forEach(function (el) { defaults[el.getAttribute("data-edit")] = sanitize(el.innerHTML); });
+  function applyEdits() {
+    editable.forEach(function (el) {
+      var k = el.getAttribute("data-edit");
+      el.innerHTML = Object.prototype.hasOwnProperty.call(state.edits, k) ? sanitize(String(state.edits[k])) : defaults[k];
+    });
+  }
+  applyEdits();
+
+  // ---------- dibujo de filas ----------
+  function rowHtml(label, row, cls) {
+    var h = '<div class="row' + (cls ? " " + cls : "") + '"><span class="lbl">' + label + "</span>";
+    for (var i = 0; i < row.length; i++) h += '<span class="sq' + (row[i] ? " on" : "") + '"></span>';
+    return h + "</div>";
+  }
+  function drawStrip(canvas, row) {
+    var g = canvas.getContext("2d"), w = canvas.width / row.length;
+    g.clearRect(0, 0, canvas.width, canvas.height);
+    g.fillStyle = token("--cell");
+    for (var i = 0; i < row.length; i++) if (row[i]) g.fillRect(i * w, 0, w, canvas.height);
+  }
+  function parseStep(input) {
+    var txt = input.value.replace(/[.\s,_]/g, "");
+    if (!/^\d{1,40}$/.test(txt)) return null;
+    return BigInt(txt);
+  }
+  function withDots(big) { return big.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+
+  // ---------- juego 1 ----------
+  var g1 = { rows: [], t: 0 };
+  function g1Render() {
+    var first = g1.rows[0].row, html = "";
+    g1.rows.forEach(function (r) {
+      var again = r.t > 0 && sameRow(r.row, first);
+      html += rowHtml("paso " + r.t + (again ? " ←" : ""), r.row, again ? "same" : "");
+    });
+    $("g1-rows").innerHTML = html;
+  }
+  function g1Reset(steps) {
+    g1.rows = [{ t: 0, row: g1Start() }]; g1.t = 0;
+    for (var i = 0; i < steps; i++) g1Advance();
+    g1Render();
+  }
+  function g1Advance() {
+    var last = g1.rows[g1.rows.length - 1];
+    g1.t += 1;
+    g1.rows.push({ t: g1.t, row: g1Step(last.row) });
+    if (g1.rows.length > 10) g1.rows.splice(1, 1);
+  }
+  $("g1-step").addEventListener("click", function () { g1Advance(); g1Render(); });
+  $("g1-reset").addEventListener("click", function () { g1Reset(0); });
+  function g1DoJump() {
+    var t = parseStep($("g1-far"));
+    if (t === null) { $("g1-out").textContent = "Escribí un número entero, sin letras."; $("g1-far-row").innerHTML = ""; return; }
+    var row = g1Jump(g1Start(), t), cell = row.indexOf(1), rest = Number(t % 7n);
+    $("g1-out").innerHTML = "<b>" + withDots(t) + "</b> dividido 7 sobra <b>" + rest + "</b>. La luz está en la casilla <b>" + cell + "</b>.";
+    $("g1-far-row").innerHTML = rowHtml("ese paso", row, "");
+  }
+  $("g1-jump").addEventListener("click", g1DoJump);
+  $("g1-far").addEventListener("keydown", function (e) { if (e.key === "Enter") g1DoJump(); });
+
+  // ---------- puntaje ----------
+  function scoreRender() {
+    var p = Number($("score-p").value) / 100, s = score(p, 1);
+    var txt = s >= 0.995 ? "Acertó y estaba segura." : s > 0.005 ? "Acertó, pero dudando." :
+      s > -0.005 ? "Dijo «no sé»." : "Se jugó por la respuesta equivocada.";
+    $("score-out").innerHTML = "Segura en un <b>" + Math.round(p * 100) + "%</b>. Puntaje: <b>" +
+      (s > 0 ? "+" : s < 0 ? "−" : "") + Math.abs(s).toFixed(2).replace(".", ",") + "</b>. " + txt;
+    $("score-mark").style.left = ((s + 3) / 4 * 100) + "%";
+  }
+  $("score-p").addEventListener("input", scoreRender);
+
+  // ---------- juego 2 ----------
+  var G2_ROWS = 60, g2 = { rows: [], t: 0 };
+  function g2Draw() {
+    var c = $("g2-canvas"), g = c.getContext("2d"), w = c.width / G2_N, h = c.height / G2_ROWS;
+    g.clearRect(0, 0, c.width, c.height);
+    g.fillStyle = token("--cell");
+    g2.rows.forEach(function (row, y) { for (var i = 0; i < G2_N; i++) if (row[i]) g.fillRect(i * w, y * h, w, h); });
+    var from = g2.t - g2.rows.length + 1;
+    $("g2-count").textContent = "Se ven los pasos " + from + " a " + g2.t + ".";
+  }
+  function g2Advance(nSteps) {
+    for (var i = 0; i < nSteps; i++) {
+      g2.rows.push(g2Step(g2.rows[g2.rows.length - 1])); g2.t += 1;
+      if (g2.rows.length > G2_ROWS) g2.rows.shift();
+    }
+  }
+  function g2Reset(steps) { g2.rows = [g2Start()]; g2.t = 0; g2Advance(steps); g2Draw(); }
+  $("g2-step").addEventListener("click", function () { g2Advance(1); g2Draw(); });
+  $("g2-run").addEventListener("click", function () { g2Advance(40); g2Draw(); });
+  $("g2-reset").addEventListener("click", function () { g2Reset(0); });
+
+  var g2d = 2;
+  var picks = Array.prototype.slice.call(app.querySelectorAll("button.pick"));
+  function g2Compare() {
+    var a = g2Start();
+    for (var i = 0; i < g2d; i++) a = g2Step(a);
+    var b = g2FarStep(g2Start(), g2d), same = sameRow(a, b);
+    $("g2-a-lbl").textContent = "Dando " + g2d + (g2d === 1 ? " paso" : " pasos") + " de a uno:";
+    $("g2-b-lbl").textContent = "Aplicando la regla una sola vez, mirando a distancia " + g2d + ":";
+    drawStrip($("g2-a"), a); drawStrip($("g2-b"), b);
+    var v = $("g2-verdict");
+    v.textContent = same ? "Son iguales, casilla por casilla." : "Son distintas. Con " + g2d + " no funciona.";
+    v.className = "verdict " + (same ? "yes" : "no");
+    picks.forEach(function (p) { p.setAttribute("aria-pressed", String(Number(p.getAttribute("data-d")) === g2d)); });
+  }
+  picks.forEach(function (p) { p.addEventListener("click", function () { g2d = Number(p.getAttribute("data-d")); g2Compare(); }); });
+
+  function g2DoJump() {
+    var t = parseStep($("g2-far"));
+    if (t === null) { $("g2-out").textContent = "Escribí un número entero, sin letras."; return; }
+    var t0 = performance.now(), res = g2Jump(g2Start(), t), ms = performance.now() - t0;
+    var on = G2_CELLS.filter(function (c) { return res.row[c] === 1; });
+    var off = G2_CELLS.filter(function (c) { return res.row[c] !== 1; });
+    $("g2-out").innerHTML = "Paso <b>" + withDots(t) + "</b>: hicieron falta <b>" + res.jumps.length + "</b> saltos y " +
+      (ms < 1 ? "menos de 1 milisegundo" : Math.round(ms) + " milisegundos") + ". De las casillas preguntadas, prendidas: <b>" +
+      (on.length ? on.join(", ") : "ninguna") + "</b>. Apagadas: <b>" + (off.length ? off.join(", ") : "ninguna") + "</b>.";
+    drawStrip($("g2-far-row"), res.row);
+  }
+  $("g2-jump").addEventListener("click", g2DoJump);
+  $("g2-far").addEventListener("keydown", function (e) { if (e.key === "Enter") g2DoJump(); });
+
+  function redrawCanvases() { g2Draw(); g2Compare(); g2DoJump(); }
+  g1Reset(2); g1DoJump(); scoreRender(); g2Reset(G2_ROWS - 1); g2Compare(); g2DoJump();
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", redrawCanvases);
+  }
+  new MutationObserver(redrawCanvases).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---------- editar el texto y guardarlo como versión nueva de la página ----------
+  var SKELETON = '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>';
+  var HEAD = '<title>Los dos primeros juegos</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">\n';
+  function buildDocument(next) {
+    var close = function (tag) { return "<" + "/" + tag + ">"; };
+    var json = JSON.stringify(next).replace(/</g, "\\u003c");
+    return SKELETON + "\n" + HEAD +
+      '<style id="css">' + $("css").textContent + close("style") + "\n" +
+      '<script type="application/json" id="state">' + json + close("script") + "\n" +
+      '<template id="tpl">' + $("tpl").innerHTML + close("template") + "\n" +
+      '<div id="app">' + close("div") + "\n" +
+      '<script id="code">' + $("code").textContent + close("script") + "\n" +
+      "\n</body></html>";
+  }
+
+  var editing = false, artifactApi = null;
+  function note(msg) { $("edit-note").textContent = msg; }
+  function setEditing(on) {
+    editing = on;
+    editable.forEach(function (el) { if (on) el.setAttribute("contenteditable", "true"); else el.removeAttribute("contenteditable"); });
+    $("edit-start").hidden = on; $("edit-save").hidden = !on; $("edit-cancel").hidden = !on;
+    note(on ? "Tocá cualquier texto resaltado y escribí." : "");
+  }
+  function readOnly() { setEditing(false); applyEdits(); $("editbar").hidden = true; }
+  app.addEventListener("keydown", function (e) {
+    if (editing && e.key === "Enter" && e.target.closest && e.target.closest("[data-edit]")) e.preventDefault();
+  });
+  app.addEventListener("paste", function (e) {
+    if (!editing || !(e.target.closest && e.target.closest("[data-edit]"))) return;
+    e.preventDefault();
+    var text = (e.clipboardData || window.clipboardData).getData("text").replace(/\s+/g, " ");
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    sel.deleteFromDocument();
+    sel.getRangeAt(0).insertNode(document.createTextNode(text));
+    sel.collapseToEnd();
+  });
+  $("edit-start").addEventListener("click", function () { setEditing(true); });
+  $("edit-cancel").addEventListener("click", function () { setEditing(false); applyEdits(); });
+  $("edit-save").addEventListener("click", function () {
+    if (!artifactApi) return;
+    var edits = {};
+    editable.forEach(function (el) {
+      var k = el.getAttribute("data-edit"), cur = sanitize(el.innerHTML);
+      if (cur !== defaults[k]) edits[k] = cur;
+    });
+    note("Guardando…");
+    $("edit-save").disabled = true;
+    artifactApi.publish(buildDocument({ edits: edits })).then(function () {
+      note("Guardado. La página se va a recargar.");
+    }, function (err) {
+      var code = err && err.code;
+      $("edit-save").disabled = false;
+      if (code === "conflict") { note("Se guardó otra versión antes. La página se va a recargar."); return; }
+      if (code === "not_writer" || code === "not_granted" || code === "not_declared" || code === "consent_required" ||
+          code === "capability_disabled" || code === "capability_removed") { readOnly(); return; }
+      note("No se pudo guardar (" + (code || "error") + "). Tu texto sigue acá: probá de nuevo en un rato.");
+    });
+  });
+
+  // ---------- las capacidades llegan después; la página funciona sin ellas ----------
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("artifact").then(function (api) {
+      if (!api) return;
+      artifactApi = api;
+      $("editbar").hidden = false;
+    }, function () {});
+    window.claude.use("comments").then(function (api) {
+      if (!api) return;
+      Array.prototype.slice.call(app.querySelectorAll("button.ask")).forEach(function (btn) {
+        btn.hidden = false;
+        btn.addEventListener("click", function () {
+          var section = btn.closest("section");
+          api.openComposer({ element: section.querySelector("h2") || section }).then(function () {}, function (err) {
+            if (err && err.code === "unavailable") btn.hidden = true;
+          });
+        });
+      });
+    }, function () {});
+  }
+})();
+</script>
