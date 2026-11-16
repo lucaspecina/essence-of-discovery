@@ -38,6 +38,7 @@ pruebas puntuales de WAGER.
 - [Lo que se les mandó a los críticos](reviews/2026-11-16-critics-briefs.md) — ocho candidatas y las preguntas de las dos vueltas.
 - [GPT Astra, dos vueltas](reviews/2026-11-16-astra-two-rounds.md) · [Codex, dos vueltas](reviews/2026-11-16-codex-two-rounds.md) — respuestas completas, con un resumen arriba.
 - [Críticos, vueltas 3 a 5](reviews/2026-11-16-critics-rounds-3-to-5.md) — del diagnóstico a la premisa "hacer pasar lo que vimos pasar": pedidos y respuestas completas, y por qué esa premisa no se construye.
+- [Críticos, vueltas 6 y 7](reviews/2026-11-16-critics-rounds-6-7.md) — el reinicio desde cero: cinco direcciones, "leyes con comprobante" y sus agujeros.
 
 ## notes
 
