@@ -33,6 +33,7 @@ pruebas puntuales de WAGER.
 ## readings
 
 - [Trabajo previo: tres búsquedas del 16-nov](readings/2026-11-16-prior-work-three-searches.md) — unas 150 búsquedas de lectores secundarios, casi todo resúmenes: qué existe, qué no apareció y dónde hay margen medido.
+- [Medir descubrimiento según Wolfram: la bibliografía](readings/2026-11-16-measuring-discovery-literature.md) — nueve lectores: Wolfram y el premio de la regla 30 para agentes, los objetos exactos detrás de los bolsillos, bancos y sistemas, cuánta búsqueda ahorra una IA, el Juego de la Vida, filosofía, información algorítmica y estándares. Con marcas de lectura y lo que quedó sin buscar.
 
 ## reviews
 
