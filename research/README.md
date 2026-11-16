@@ -26,7 +26,8 @@ pruebas puntuales de WAGER.
 ## proposals
 
 - [Descubrir = encontrar un atajo verificable](proposals/2026-11-15-discovery-as-finding-a-shortcut.md) — la cumbre de ARC, la idea, las críticas y el trabajo previo de otros (§8).
-- [Que la IA entregue un programa que resuma el mundo, y compararlo con la realidad](proposals/2026-11-16-outrun-a-program-that-summarizes.md) — **la propuesta vigente**: programa entregado, comparado contra la regla corrida, midiendo tamaño y tiempo. Aprobada por Lucas para una primera prueba.
+- [Un atajo que nadie tenía: cómo medir si una IA descubre](proposals/2026-11-16-shortcuts-in-sampled-worlds.md) — **la propuesta vigente, para decidir**: reglas sorteadas, una máquina nuestra encuentra bolsillos con mucho cómputo, la IA entrega un programa que predice y tiene que ganarle a todos los rivales con poco presupuesto. Primero un piloto sin IA que dice si hay mundos útiles.
+- [Que la IA entregue un programa que resuma el mundo, y compararlo con la realidad](proposals/2026-11-16-outrun-a-program-that-summarizes.md) — la forma de medir que se reusa: programa entregado, comparado contra la regla corrida, midiendo tamaño y tiempo. Probada el 16-nov; los mundos dibujados salieron fáciles.
 - [Que la IA entregue la "guía de campo" de un mundo que armamos nosotros](proposals/2026-11-16-field-guide-executable-catalog.md) — propuesta tras la primera prueba: mundos con partículas y choques plantados; la IA entrega afirmaciones comprobables y un programa las usa para lograr objetivos que ella no vio. Reemplazada por la de arriba.
 
 ## readings
@@ -40,6 +41,7 @@ pruebas puntuales de WAGER.
 - [Críticos, vueltas 3 a 5](reviews/2026-11-16-critics-rounds-3-to-5.md) — del diagnóstico a la premisa "hacer pasar lo que vimos pasar": pedidos y respuestas completas, y por qué esa premisa no se construye.
 - [Críticos, vueltas 6 y 7](reviews/2026-11-16-critics-rounds-6-7.md) — el reinicio desde cero: cinco direcciones, "leyes con comprobante" y sus agujeros.
 - [Críticos, vueltas 8 a 11](reviews/2026-11-16-critics-rounds-8-to-11.md) — de "cuánto cómputo vale una idea" a "las tres cerraduras", con un tercer revisor (Grok) y cancha abierta; veredicto: sí con cambios, solo piloto.
+- [Críticos, vuelta 12: el diseño técnico de los juegos](reviews/2026-11-16-critics-round-12-game-design.md) — no se juega todavía; sí el piloto sin IA. Responder con conjuntos, filtro invertido, lista de rivales.
 
 ## notes
 
