@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness.sandbox import Sandbox  # noqa: E402
 from mixed.brief import make_brief  # noqa: E402
-from mixed.instances import mixed_games, plain_game, twin_games  # noqa: E402
+from mixed.instances import deep_games, mixed_games, plain_game, twin_games  # noqa: E402
 from mixed.scoring import score_cell  # noqa: E402
 
 # Dólares por millón de tokens (entrada, salida). De una búsqueda web del 16-nov-2026, no de la página
@@ -48,7 +48,7 @@ _ledger_lock = threading.Lock()
 
 
 def all_games() -> dict:
-    return {g.game_id: g for g in [plain_game()] + mixed_games() + twin_games()}
+    return {g.game_id: g for g in [plain_game()] + mixed_games() + twin_games() + deep_games()}
 
 
 def truth_of(game) -> list:

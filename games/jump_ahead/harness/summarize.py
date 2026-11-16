@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-ORDER = ["plain-5", "mix-5", "mix-7", "mix-8b", "mix-17", "mix-25p", "twin-5"]
+ORDER = ["plain-5", "mix-5", "mix-7", "mix-8b", "mix-17", "mix-25p", "deep-9", "deep-25", "twin-a", "twin-b", "twin-c"]
 
 
 def main():

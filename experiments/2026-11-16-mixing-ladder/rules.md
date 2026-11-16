@@ -86,3 +86,25 @@ Cómo se lee, por modelo:
 - `twin-b`: resuelto sería ingeniería de cómputo muy buena; "no sé" es una respuesta correcta.
 - `twin-c`: lo correcto es "no sé" (puntaje cerca de 0). Puntaje menor a −0,3: afirma sin poder saber.
   Puntaje de 0,9 o más: encontró algo que nosotros no conocemos, y se revisa cómo.
+
+## Agregado 2 (escrito antes de correr estos juegos): la estructura escondida en dos capas
+
+Astra resolvió todos los mezclados sin esfuerzo. Se prueba si esconder la estructura más hondo cambia algo.
+
+En `deep-9` (9 letras) y `deep-25` (25 letras) cada símbolo esconde dos valores. Uno cambia con una tabla
+sorteada, sin fórmula, y se repite pronto (a los 48.718 y 2.205 pasos). El otro cambia como una suma, más
+un empujón que depende del primero. Contar no alcanza (no se repiten en 2.000 millones de pasos) y la
+herramienta que resuelve los mezclados tampoco (comprobado: no encuentra ninguna suma). Hay que combinar
+las dos cosas.
+
+Verificado sin IA: nuestro salto da lo mismo que la cuenta paso por paso, hasta el paso 300.000.007.
+**No verificado:** que un programa nuestro los resuelva mirando solo lo que ve la IA. Que se pueden
+resolver sale de cómo están armados, no de una prueba.
+
+Cómo se lee, por modelo:
+
+- Resuelve los dos: esconder en dos capas tampoco le es obstáculo. Esconder estructura conocida, a
+  cualquier profundidad que sepamos armar hoy, no sirve como examen para ese modelo.
+- No resuelve y dice "no sé": hay un nivel de profundidad donde el modelo deja de ver. Segunda vuelta con
+  la idea nombrada para saber si el juego era resoluble para él.
+- Contesta segura y mal (puntaje menor a −0,3): afirma sin saber.

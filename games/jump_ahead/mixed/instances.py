@@ -10,11 +10,13 @@ con 27 esos dos se repetían a los 40 y 24 millones de pasos, y una IA podía re
     mix-17     17 letras.           1 de cada 1.307.674.368.000.
     mix-25p    25 letras (pares).   1 de cada 1,3·10^21.
     twin-a/b/c 5 letras, tabla sorteada al azar: sin regla de resultado conocida (ver TWINS abajo).
+    deep-9/25  dos capas escondidas en cada símbolo (ver layered.py).
 """
 from __future__ import annotations
 
 from dataclasses import replace
 
+from .layered import make_layered
 from .linear import MixedGame, make_mixed
 from .twin import TwinGame
 
@@ -54,3 +56,8 @@ def twin_game(game_id: str = "twin-c") -> TwinGame:
 
 def twin_games() -> list:
     return [twin_game(game_id) for game_id in TWINS]
+
+
+def deep_games() -> list:
+    """Dos capas escondidas en cada símbolo: una base sorteada que se repite, y arriba una suma con empujones."""
+    return [make_layered("deep-9", 3, 29, seed=9001, far_step=FAR), make_layered("deep-25", 5, 27, seed=25001, far_step=FAR)]
