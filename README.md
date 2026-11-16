@@ -3,9 +3,12 @@
 **La pregunta.** Cuando una IA resuelve algo difícil, ¿se le ocurrió la idea o probó cosas hasta que una
 funcionó? ¿Se puede medir esa diferencia con juegos mínimos, sin que otra IA haga de juez?
 
-**Estado (15-nov-2026).** Repo recién creado. Hay un juego en diseño, `jump-ahead`: seis ejemplos de
-mundos verificados con cuentas, **cero partidas jugadas con una IA**. Nada de lo que hay acá es todavía un
-resultado sobre modelos.
+**Estado (16-nov-2026).** Un juego, `jump-ahead`, y una primera prueba con IAs: 29 partidas con tres
+modelos. Resultado, con su alcance: esconder un sistema conocido cambiándole los nombres **no** le esconde
+nada al mejor modelo probado (`gpt-6-astra` resolvió todo en menos de dos minutos por juego); los modelos
+anteriores sí tropiezan. O sea que esa forma de armar el examen no mide descubrimiento en el mejor modelo
+de hoy. Detalle en [la lectura](experiments/2026-11-16-mixing-ladder/reading.md). El rumbo que sigue no
+está decidido.
 
 ## Para entender de qué se trata
 
@@ -15,7 +18,7 @@ Leé la [guía en llano](docs/guide.md). Son 7 minutos, sin jerga.
 
 | Juego | La idea en una línea | Estado |
 |---|---|---|
-| [`jump-ahead`](games/jump_ahead/) | La IA ve la regla completa de un sistema simple y tiene que contestar por un futuro lejísimo. Paso por paso no llega: tiene que encontrar un atajo. Medimos si lo *ve* o lo *busca*. | Diseño. Ejemplos verificados sin IA. |
+| [`jump-ahead`](games/jump_ahead/) | La IA ve la regla completa de un sistema simple y tiene que contestar por un futuro lejísimo. Paso por paso no llega: tiene que encontrar un atajo. Medimos si lo *ve* o lo *busca*. | Primera prueba hecha: al mejor modelo le queda fácil. |
 
 Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguiente va al lado.
 

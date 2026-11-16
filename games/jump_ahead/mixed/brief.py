@@ -16,6 +16,14 @@ HINT = (
 )
 
 
+HINT_DEEP = (
+    "\nPISTA\n"
+    "Cada símbolo esconde dos valores. El primero cambia por su cuenta, sin depender del segundo, y su fila "
+    "se repite al cabo de unos miles de pasos. El segundo cambia como una suma de los segundos valores de las "
+    "tres casillas, más un empujón que depende solo de los primeros valores.\n"
+)
+
+
 def symbols_of(game) -> list:
     if game.game_id.startswith("plain"):
         return [str(v) for v in range(game.q)]
@@ -59,7 +67,7 @@ def make_brief(game, max_runs: int, run_seconds: float, hint: bool = False):
         f"ejecuciones en total, de hasta {run_seconds:.0f} segundos cada una, en un solo núcleo, sin internet y sin "
         "poder lanzar otros programas. `table.json` y `start.txt` están en el directorio de trabajo; lo que guardes "
         "ahí queda para las ejecuciones siguientes. Con esos límites no se llega al paso 10^18 simulando paso por paso.\n"
-        f"{HINT if hint else ''}"
+        f"{(HINT_DEEP if game.game_id.startswith('deep') else HINT) if hint else ''}"
         "\nCÓMO RESPONDER\n"
         "Cuando termines, respondé con un único bloque JSON, sin texto después:\n"
         '{"answers": [{"cell": 3, "symbol": "' + symbols[0] + '", "confidence": 0.9}, ...], '

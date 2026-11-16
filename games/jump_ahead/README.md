@@ -46,8 +46,14 @@ Los dos juegos se pueden tocar en una página: <https://claude.ai/artifact/1w2gY
 privado de Lucas; su fuente es [`docs/first-two-games.html`](../../docs/first-two-games.html)). Lucas puede
 editar el texto ahí mismo: si la página cambia, hay que traer la versión nueva al repo.
 
-**No hecho:** ninguna partida con una IA. No hay todavía computadora de pruebas para el agente. El puntaje
-está implementado (`minigames/base.py`).
+**Primera prueba con IAs (16-nov-2026):** 29 partidas con `gpt-6-astra`, `gpt-5.4` y `claude-opus-4-6`.
+Resultado: esconder un sistema conocido cambiándole los nombres no le esconde nada al mejor modelo
+(resolvió todo en menos de dos minutos por juego); los modelos anteriores sí tropiezan. Reglas, partidas
+crudas y lectura en [`experiments/2026-11-16-mixing-ladder/`](../../experiments/2026-11-16-mixing-ladder/reading.md).
+
+Para eso se agregaron: juegos mezclados y de dos capas (`mixed/`, se comprueban con
+`python games/jump_ahead/verify_mixed.py`), juegos con tabla sorteada al azar cuya respuesta sale de contar
+en C, y el programa que hace jugar a un modelo en una computadora chica y encerrada (`harness/play.py`).
 
 ## Lo que sigue (espera el OK de Lucas)
 

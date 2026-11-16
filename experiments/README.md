@@ -6,4 +6,4 @@ Una carpeta por corrida: `AAAA-MM-DD-short-name/`, con tres cosas adentro.
 - `raw/` — los resultados crudos, sin tocar.
 - `reading.md` — la lectura, en diez líneas, con su alcance: qué modelos, qué mundos, cuántas partidas.
 
-Todavía no hay ninguna: no se corrió nada con una IA.
+- [`2026-11-16-mixing-ladder/`](2026-11-16-mixing-ladder/reading.md) — ¿una IA reconoce un sistema conocido con los nombres cambiados? El mejor modelo, sí, enseguida.
