@@ -230,9 +230,13 @@ mitad del trabajo, así que algunas líneas quedaron sin buscar; se marcan en la
 - **Medir con pruebas formales y gasto existe en matemática.** OEIS Open (2026): con Lean como juez, la tasa de
   resolución sube unos 10 puntos cada vez que se multiplica por diez el gasto, sin techo hasta 200 dólares por
   conjetura; las generaciones nuevas mejoran solo unos puntos.
-- **Contra rivales clásicos, la evidencia es mixta.** Muestreos simples empatan con evolución de código en 6 de
-  9 problemas de AlphaEvolve con igual presupuesto; un agente usa 23,5% más consultas que el algoritmo clásico
-  para aprender un autómata oculto.
+- **Contra rivales clásicos afinados, la ventaja de la IA se achica o desaparece** en la mayoría de los casos
+  documentados (unas 50 comparaciones juntadas por un lector). La guía del modelo gana mucho contra búsqueda al
+  azar: FunSearch necesitó unas 25 veces menos programas que la mutación al azar, como cota. Pero varios récords
+  de AlphaEvolve los superaron después solucionadores clásicos sin IA, a veces en minutos. Muestreos simples
+  empatan con evolución de código en 6 de 9 problemas con igual presupuesto, y un agente usa 23,5% más consultas
+  que el algoritmo clásico para aprender un autómata oculto. Casi ninguna comparación iguala el costo total, y
+  no apareció ningún estudio que traduzca una idea de IA a "cuánta fuerza bruta reemplaza".
 - **Programas cortos que reproducen datos** (KoLMogorov Test): más del 95% de los aciertos en datos reales son
   copias de la entrada. Mide tamaño, no atajos de tiempo.
 - **Agrupamientos exactos:** Israeli y Goldenfeld (2004, 2006), Song y Grochow (2020, exhaustivo hasta grupos de
