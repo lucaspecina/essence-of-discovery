@@ -3,13 +3,16 @@
 **La pregunta.** Cuando una IA resuelve algo difícil, ¿se le ocurrió la idea o probó cosas hasta que una
 funcionó? ¿Se puede medir esa diferencia con juegos mínimos, sin que otra IA haga de juez?
 
-**Estado (16-nov-2026).** Un juego, `jump-ahead`, y una primera prueba con IAs: 29 partidas con tres
-modelos. Resultado, con su alcance: esconder un sistema conocido cambiándole los nombres **no** le esconde
-nada al mejor modelo probado (`gpt-6-astra` resolvió todo en menos de dos minutos por juego); los modelos
-anteriores sí tropiezan. O sea que esa forma de armar el examen no mide descubrimiento en el mejor modelo
-de hoy. Detalle en [la lectura](experiments/2026-11-16-mixing-ladder/reading.md). El rumbo que sigue no
-está decidido; hay una [propuesta](research/proposals/2026-11-16-field-guide-executable-catalog.md) esperando
-a Lucas.
+**Estado (16-nov-2026).** Dos juegos.
+
+- `jump-ahead`: primera prueba con IAs hecha (29 partidas, tres modelos). Esconder un sistema conocido
+  cambiándole los nombres **no** le esconde nada al mejor modelo probado (`gpt-6-astra` resolvió todo en
+  menos de dos minutos por juego); los anteriores sí tropiezan. Esa forma de armar el examen quedó cerrada.
+  [Lectura](experiments/2026-11-16-mixing-ladder/reading.md).
+- `outrun`: en vez de una respuesta, la IA entrega un programa que predice el mundo, y se lo compara contra
+  la regla corrida paso por paso. Dos juegos armados y verificados sin IA; primera prueba con modelos en
+  [`experiments/2026-11-16-outrun-first-two-games/`](experiments/2026-11-16-outrun-first-two-games/).
+  [Propuesta](research/proposals/2026-11-16-outrun-a-program-that-summarizes.md).
 
 ## Para entender de qué se trata
 
@@ -20,6 +23,7 @@ Leé la [guía en llano](docs/guide.md). Son 7 minutos, sin jerga.
 | Juego | La idea en una línea | Estado |
 |---|---|---|
 | [`jump-ahead`](games/jump_ahead/) | La IA ve la regla completa de un sistema simple y tiene que contestar por un futuro lejísimo. Paso por paso no llega: tiene que encontrar un atajo. Medimos si lo *ve* o lo *busca*. | Primera prueba hecha: al mejor modelo le queda fácil. |
+| [`outrun`](games/outrun/) | La IA ve la regla completa y entrega un programa que dice cómo queda el mundo después de cualquier cantidad de pasos. Se mide si acierta, cuánto pesa y cuánto tarda. | Dos juegos verificados sin IA; primera prueba en curso. |
 
 Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguiente va al lado.
 
@@ -28,7 +32,7 @@ Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguient
 En la raíz va solo lo oficial. Abajo, cada cosa en su lugar:
 
 ```
-games/<game>/    el juego: su código y cómo se juega
+games/<game>/    el juego: su código y cómo se juega (games/shared/: lo que usan todos)
 experiments/     cada corrida: reglas, resultados crudos, lectura
 docs/            lo oficial y vigente: guide, lessons-learned, from-wager-to-jump-ahead, decisions/
 research/        material de trabajo: proposals, readings, theory, notes, reviews, legacy/
