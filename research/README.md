@@ -26,10 +26,21 @@ pruebas puntuales de WAGER.
 ## proposals
 
 - [Descubrir = encontrar un atajo verificable](proposals/2026-11-15-discovery-as-finding-a-shortcut.md) — la cumbre de ARC, la idea, las críticas y el trabajo previo de otros (§8).
+- [Que la IA entregue la "guía de campo" de un mundo que armamos nosotros](proposals/2026-11-16-field-guide-executable-catalog.md) — propuesta tras la primera prueba: mundos con partículas y choques plantados; la IA entrega afirmaciones comprobables y un programa las usa para lograr objetivos que ella no vio. **Sin decidir.**
+
+## readings
+
+- [Trabajo previo: tres búsquedas del 16-nov](readings/2026-11-16-prior-work-three-searches.md) — unas 150 búsquedas de lectores secundarios, casi todo resúmenes: qué existe, qué no apareció y dónde hay margen medido.
+
+## reviews
+
+- [Lo que se les mandó a los críticos](reviews/2026-11-16-critics-briefs.md) — ocho candidatas y las preguntas de las dos vueltas.
+- [GPT Astra, dos vueltas](reviews/2026-11-16-astra-two-rounds.md) · [Codex, dos vueltas](reviews/2026-11-16-codex-two-rounds.md) — respuestas completas, con un resumen arriba.
 
 ## notes
 
 - [Traspaso del 15-nov-2026](notes/2026-11-15-handoff.md) — dónde estamos y qué espera a Lucas.
+- [Juegos con un programa diseñado debajo](notes/2026-11-16-designed-programs-idea.md) — idea guardada tras la primera prueba: elegir nosotros el fenómeno, reglas a la vista, fenómenos que todavía no ocurrieron. Sin probar.
 
 ## legacy/readings
 

@@ -8,7 +8,8 @@ modelos. Resultado, con su alcance: esconder un sistema conocido cambiándole lo
 nada al mejor modelo probado (`gpt-6-astra` resolvió todo en menos de dos minutos por juego); los modelos
 anteriores sí tropiezan. O sea que esa forma de armar el examen no mide descubrimiento en el mejor modelo
 de hoy. Detalle en [la lectura](experiments/2026-11-16-mixing-ladder/reading.md). El rumbo que sigue no
-está decidido.
+está decidido; hay una [propuesta](research/proposals/2026-11-16-field-guide-executable-catalog.md) esperando
+a Lucas.
 
 ## Para entender de qué se trata
 

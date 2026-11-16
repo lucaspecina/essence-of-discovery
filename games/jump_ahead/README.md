@@ -55,18 +55,21 @@ Para eso se agregaron: juegos mezclados y de dos capas (`mixed/`, se comprueban 
 `python games/jump_ahead/verify_mixed.py`), juegos con tabla sorteada al azar cuya respuesta sale de contar
 en C, y el programa que hace jugar a un modelo en una computadora chica y encerrada (`harness/play.py`).
 
-## Lo que sigue (espera el OK de Lucas)
+## Lo que sigue
 
-1. Armar unos 12 mini-juegos (con atajo a dos niveles de disfraz, sin atajo, trampas) y verificarlos sin IA.
-2. Probar un modelo actual: primero 4 partidas para medir el costo, después unas 48.
-3. Leer el resultado contra reglas escritas de antemano:
+El plan que estaba acá (12 mini-juegos con disfraces y unas 48 partidas) quedó atrás: la primera prueba
+ya contestó su pregunta principal. Por la regla escrita antes de correr ("resuelve todo, hasta lo más
+disfrazado → el juego es fácil para los modelos de hoy → endurecer o cerrar"), esconder una estructura
+conocida queda cerrado como examen para el mejor modelo.
 
-| Si pasa esto | Quiere decir | Qué se hace |
-|---|---|---|
-| Resuelve todo, hasta lo más disfrazado | El juego es fácil para los modelos de hoy | Endurecer o cerrar |
-| No resuelve ni con la idea nombrada | El juego está mal armado | Arreglar el juego |
-| Resuelve, y su esfuerzo crece como el del buscador a ciegas | Busca | Resultado |
-| Resuelve, y su esfuerzo casi no crece | Ve (si no era un truco de manual) | Resultado |
+Lo que está sobre la mesa, sin decidir:
+
+- Una [propuesta de juego nuevo](../../research/proposals/2026-11-16-field-guide-executable-catalog.md):
+  mundos con partículas y choques plantados, donde la IA entrega afirmaciones comprobables en vez de una
+  respuesta lejana.
+- Una [idea guardada](../../research/notes/2026-11-16-designed-programs-idea.md) para este mismo juego:
+  fenómenos que nunca ocurren en lo que la IA puede correr. Los dos críticos externos esperan que el
+  mejor modelo la resuelva; valdría como prueba de descarte barata.
 
 ## Cómo se arma un juego con regla de resultado
 
