@@ -71,8 +71,10 @@ enunciado le dice cómo se la va a probar. Su `solution.py` se prueba después e
 
 ## Estado (16-nov-2026)
 
-Juegos armados y verificados sin IA. Primera prueba con modelos:
-[`experiments/2026-11-16-outrun-first-two-games/`](../../experiments/2026-11-16-outrun-first-two-games/).
+Juegos armados y verificados sin IA. Primera prueba con modelos (6 partidas): `gpt-6-astra` y `gpt-5.4`
+sacaron todos los casos bien en los dos juegos.
+[Lectura](../../experiments/2026-11-16-outrun-first-two-games/reading.md). La forma de medir funciona. Estos
+dos mundos no sirven de examen: el patrón lo dibujamos nosotros dentro de la regla, y se lee.
 
 ## Límites conocidos
 

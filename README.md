@@ -10,8 +10,10 @@ funcionó? ¿Se puede medir esa diferencia con juegos mínimos, sin que otra IA 
   menos de dos minutos por juego); los anteriores sí tropiezan. Esa forma de armar el examen quedó cerrada.
   [Lectura](experiments/2026-11-16-mixing-ladder/reading.md).
 - `outrun`: en vez de una respuesta, la IA entrega un programa que predice el mundo, y se lo compara contra
-  la regla corrida paso por paso. Dos juegos armados y verificados sin IA; primera prueba con modelos en
-  [`experiments/2026-11-16-outrun-first-two-games/`](experiments/2026-11-16-outrun-first-two-games/).
+  la regla corrida paso por paso. Dos juegos armados y verificados sin IA, y una primera prueba con
+  modelos (6 partidas): los dos modelos sacaron todo bien. La forma de medir funciona, pero en esos mundos el
+  patrón lo dibujamos nosotros dentro de la regla y se lee. El rumbo que sigue no está decidido.
+  [Lectura](experiments/2026-11-16-outrun-first-two-games/reading.md).
   [Propuesta](research/proposals/2026-11-16-outrun-a-program-that-summarizes.md).
 
 ## Para entender de qué se trata
@@ -23,7 +25,7 @@ Leé la [guía en llano](docs/guide.md). Son 7 minutos, sin jerga.
 | Juego | La idea en una línea | Estado |
 |---|---|---|
 | [`jump-ahead`](games/jump_ahead/) | La IA ve la regla completa de un sistema simple y tiene que contestar por un futuro lejísimo. Paso por paso no llega: tiene que encontrar un atajo. Medimos si lo *ve* o lo *busca*. | Primera prueba hecha: al mejor modelo le queda fácil. |
-| [`outrun`](games/outrun/) | La IA ve la regla completa y entrega un programa que dice cómo queda el mundo después de cualquier cantidad de pasos. Se mide si acierta, cuánto pesa y cuánto tarda. | Dos juegos verificados sin IA; primera prueba en curso. |
+| [`outrun`](games/outrun/) | La IA ve la regla completa y entrega un programa que dice cómo queda el mundo después de cualquier cantidad de pasos. Se mide si acierta, cuánto pesa y cuánto tarda. | Primera prueba hecha: los dos modelos probados resuelven los dos juegos enteros. La forma de medir funciona; los mundos quedaron cortos. |
 
 Cada juego vive en su carpeta. Si un juego no da señal, se cierra y el siguiente va al lado.
 
