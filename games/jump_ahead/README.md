@@ -39,6 +39,9 @@ Corre en segundos y comprueba, entre otras cosas:
 En los dos, la regla de resultado coincide con la cuenta larga en los pasos 0 a 3.000, y las respuestas del
 paso un trillón salen en milisegundos.
 
+La fila del juego 2 sí vuelve a repetirse, pero recién en el paso 375.299.968.947.541 (calculado con la regla
+de resultado; el script lo comprueba). A mil millones de pasos por segundo serían 4,3 días contando.
+
 Los dos juegos se pueden tocar en una página: <https://claude.ai/artifact/1w2gYRZUJRW8Wk27LtxsaM> (enlace
 privado de Lucas; su fuente es [`docs/first-two-games.html`](../../docs/first-two-games.html)). Lucas puede
 editar el texto ahí mismo: si la página cambia, hay que traer la versión nueva al repo.
@@ -59,6 +62,25 @@ está implementado (`minigames/base.py`).
 | Resuelve, y su esfuerzo crece como el del buscador a ciegas | Busca | Resultado |
 | Resuelve, y su esfuerzo casi no crece | Ve (si no era un truco de manual) | Resultado |
 
+## Cómo se arma un juego con regla de resultado
+
+Al revés: se empieza por la respuesta. La IA recibe las piezas en el orden contrario.
+
+1. **Elegir una regla de resultado ya demostrada** (probada con un razonamiento, no solo vista en ejemplos).
+2. **Escribir la regla de generación** que la produce: una línea, que es lo que ve la IA.
+3. **Elegir el comienzo y la pregunta lejana**, tan lejos que contando no se llegue. Y revisar que no quede
+   un camino más fácil que el que plantamos (en el juego 2: que la fila no se repita pronto).
+4. **Verificar sin IA**: la cuenta paso por paso contra la regla de resultado, casilla por casilla. Si
+   difieren una vez, el juego se tira.
+
+Son dos seguros distintos. El razonamiento dice que la regla vale en el paso un trillón; la comparación
+(que llega hasta el paso 3.000) dice que la escribimos bien.
+
+Límites de armar así: solo salen juegos cuya regla de resultado ya conocía alguien, así que una IA puede
+saberla de memoria (de eso se ocupan los disfraces). Los juegos sin regla de resultado y las trampas se
+arman de otra manera. Y la IA no tiene que encontrar la misma regla que nosotros: solo se califican las
+respuestas.
+
 ## Decisiones de diseño
 
 - El titular no es la pregunta "¿ve o busca?" (ya la hicieron otros, con una IA de juez). Es medirla sin
@@ -69,6 +91,9 @@ está implementado (`minigames/base.py`).
 
 ## Pendientes
 
+- Fijar cuánto cómputo recibe la IA. Tiene que quedar muy por debajo de lo que cuesta el camino sin regla
+  de resultado: en el juego 2, encontrar la repetición contando lleva unos 4 días a mil millones de pasos
+  por segundo.
 - Traer del repo anterior, para la primera prueba, el cliente de modelos y el proceso que ejecuta el código
   del agente (unas 400 líneas).
 - Leer a texto completo el trabajo previo más cercano antes de afirmar novedad.

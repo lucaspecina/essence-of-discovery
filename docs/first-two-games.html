@@ -6,16 +6,16 @@
    Fuente: docs/first-two-games.html en el repo essence-of-discovery. El texto editado vive en #state. */
 :root {
   --bg: #f7f8fa; --surface: #ffffff; --fg: #10151c; --muted: #55606e; --line: #d9dee6;
-  --accent: #2a78d6; --accent-soft: #e3eefb; --warm: #d9541f; --cell: #10151c; --off: #e6eaf0;
+  --accent: #2a78d6; --accent-soft: #e3eefb; --warm: #d9541f; --cell: #10151c; --off: #e6eaf0; --on-accent: #ffffff;
   --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0f1318; --surface: #171c23; --fg: #e9edf2; --muted: #a3aebb; --line: #2b333d;
-  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; color-scheme: dark } }
+  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; --on-accent: #0f1318; color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #0f1318; --surface: #171c23; --fg: #e9edf2; --muted: #a3aebb; --line: #2b333d;
-  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; color-scheme: dark }
+  --accent: #5b9fee; --accent-soft: #1b2a3d; --warm: #f08a5a; --cell: #e9edf2; --off: #262d37; --on-accent: #0f1318; color-scheme: dark }
 
 body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
 .page { max-width: 44rem; margin: 0 auto; padding-block: 2.5rem 4rem;
@@ -34,9 +34,9 @@ ul, ol { padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.45r
 .status { border: 1px solid var(--line); border-left: 4px solid var(--warm); background: var(--surface); padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.95rem; }
 .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--muted); }
 .sechead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-button { font: inherit; font-size: 0.92rem; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 6px; padding: 0.45rem 0.9rem; cursor: pointer; }
+button { font: inherit; font-size: 0.92rem; font-weight: 600; color: var(--on-accent); background: var(--accent); border: 0; border-radius: 6px; padding: 0.45rem 0.9rem; cursor: pointer; }
 button.quiet { background: transparent; color: var(--accent); border: 1px solid var(--line); }
-button.pick[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.pick[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 button:focus-visible, input:focus-visible, summary:focus-visible, [contenteditable]:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
 figure { margin: 0.3rem 0; display: flex; flex-direction: column; gap: 0.7rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; min-width: 0; }
 figcaption { font-size: 0.9rem; color: var(--muted); }
@@ -59,6 +59,7 @@ figcaption { font-size: 0.9rem; color: var(--muted); }
 .case { display: flex; align-items: center; gap: 5px; }
 canvas { width: 100%; height: auto; display: block; border-radius: 4px; background: var(--off); image-rendering: pixelated; }
 .strip { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.88rem; color: var(--muted); }
+.strip canvas { height: 1.1rem; }
 .verdict { font-weight: 600; }
 .verdict.yes { color: var(--accent); } .verdict.no { color: var(--warm); }
 .scale { position: relative; height: 2.6rem; }
@@ -68,8 +69,35 @@ canvas { width: 100%; height: auto; display: block; border-radius: 4px; backgrou
 details { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.92rem; }
 summary { cursor: pointer; font-weight: 600; }
 pre { margin: 0.6rem 0 0; overflow-x: auto; font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+a { color: var(--accent); text-underline-offset: 0.15em; }
+.more { font-size: 0.95rem; font-weight: 600; }
+/* El orden de las piezas: cómo las recibe la IA y cómo las armamos nosotros. */
+.orders { gap: 0.9rem; }
+.order { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.45rem; font-size: 0.9rem; }
+.order .who { flex: 0 0 100%; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: 0.2rem 0.7rem; background: var(--bg); }
+.chip.first { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+.chip.ghost { border-style: dashed; color: var(--muted); }
+.arrow { color: var(--muted); }
+/* Los pasos numerados para armar un juego. */
+.steps { list-style: none; padding: 0; gap: 0.6rem; counter-reset: paso; }
+.steps > li { counter-increment: paso; display: grid; grid-template-columns: 2rem minmax(0, 1fr); column-gap: 0.75rem; row-gap: 0.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.8rem 0.9rem; }
+.steps > li::before { content: counter(paso); grid-column: 1; grid-row: 1 / span 2; align-self: start; width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent-soft); color: var(--fg); font-family: var(--font-display); font-weight: 700; display: grid; place-items: center; }
+.steps > li > * { grid-column: 2; }
+.steps .t { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; }
+.steps .what { color: var(--muted); font-size: 0.94rem; }
+.steps .here { font-size: 0.94rem; border-left: 3px solid var(--accent); padding-left: 0.6rem; }
+.row.diff .lbl { color: var(--warm); font-weight: 600; }
+/* Cinco casillas que se pueden prender y apagar, y lo que sale de ellas en dos pasos. */
+.pyr .sq { width: 2.3rem; height: 2.3rem; border-radius: 6px; }
+.sq.gap { background: transparent; }
+button.sq { padding: 0; border: 2px solid var(--accent); background: var(--off); cursor: pointer; }
+button.sq.on { background: var(--cell); }
 [data-edit][contenteditable="true"] { outline: 1px dashed var(--accent); outline-offset: 3px; border-radius: 3px; background: var(--accent-soft); }
-@media (max-width: 560px) { .pieces { grid-template-columns: 1fr; } .sq { width: 1.25rem; height: 1.25rem; } .row .lbl { width: 4rem; } }
+@media (max-width: 560px) { .pieces { grid-template-columns: 1fr; } .sq { width: 1.25rem; height: 1.25rem; } .row .lbl { width: 4rem; }
+  .pyr .sq { width: 2rem; height: 2rem; } .pyr .row .lbl { width: 3.2rem; }
+  .order { flex-direction: column; align-items: flex-start; gap: 0.15rem; } .order .who { flex: none; margin-bottom: 0.2rem; }
+  .order .arrow { transform: rotate(90deg); margin-left: 1.1rem; line-height: 1; } }
 </style>
 <script type="application/json" id="state">{"edits":{}}</script>
 <template id="tpl">
@@ -78,7 +106,7 @@ pre { margin: 0.6rem 0 0; overflow-x: auto; font-size: 0.8rem; line-height: 1.5;
 <header>
   <div class="kicker">jump-ahead · mini-juegos</div>
   <h1 data-edit="title">Los dos primeros juegos</h1>
-  <p class="lead" data-edit="lead">Qué recibe la IA, qué tiene que encontrar y cómo la calificamos. Con dos juegos que podés tocar.</p>
+  <p class="lead" data-edit="lead">Qué recibe la IA, qué tiene que encontrar, cómo armamos cada juego y cómo la calificamos. Con dos juegos que podés tocar.</p>
   <div class="status" data-edit="status"><b>Los dos juegos están armados y verificados con cuentas.</b> Todavía ninguna IA los jugó.</div>
   <div class="bar" id="editbar" hidden>
     <button type="button" id="edit-start">Editar texto</button>
@@ -97,6 +125,8 @@ pre { margin: 0.6rem 0 0; overflow-x: auto; font-size: 0.8rem; line-height: 1.5;
     <div class="piece"><b data-edit="a-p3h">3. Una regla de resultado</b><span data-edit="a-p3">Dice qué pasa lejos sin recorrer los pasos del medio. No se la damos: es lo que la IA tiene que encontrar.</span></div>
   </div>
   <p data-edit="a-2">Nosotros sí conocemos la regla de resultado. Con ella calculamos la respuesta exacta, y con eso calificamos.</p>
+  <p data-edit="a-3">¿Y cómo la conocemos, si al paso un trillón tampoco llegamos contando? Porque el juego se arma al revés: <b>primero elegimos la regla de resultado</b>, y después escribimos el juego a partir de ella. El paso a paso está más abajo, después del juego 1.</p>
+  <p class="more"><a href="#build" id="to-build">Ir a «Cómo se arma un juego» ↓</a></p>
 </section>
 
 <section>
@@ -140,6 +170,63 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
   </details>
 </section>
 
+<section id="build">
+  <div class="sechead"><h2 data-edit="g-h">Cómo se arma un juego</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="g-1">Para calificar necesitamos la respuesta exacta del paso un trillón. Y nosotros tampoco llegamos hasta ahí contando paso por paso. ¿De dónde la sacamos?</p>
+  <p data-edit="g-2">De que armamos el juego al revés. No escribimos un juego para después buscarle la regla de resultado. <b>Empezamos por la regla de resultado</b>, y el juego se escribe a partir de ella.</p>
+  <p data-edit="g-3">Es lo que hace quien arma un crucigrama: primero elige las palabras y después escribe las pistas. Por eso conoce las respuestas.</p>
+  <figure class="orders" role="group" aria-label="El orden en que la IA recibe las piezas y el orden en que nosotros las armamos">
+    <div class="order"><span class="who">La IA, al jugar</span>
+      <span class="chip">regla de generación</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">pregunta lejana</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip ghost">¿regla de resultado?</span></div>
+    <div class="order"><span class="who">Nosotros, al armar</span>
+      <span class="chip first">regla de resultado</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">regla de generación</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">pregunta lejana</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">verificación</span></div>
+    <figcaption data-edit="g-capo">Son las mismas piezas en otro orden. La IA tiene que llegar a donde nosotros empezamos.</figcaption>
+  </figure>
+
+  <h3 data-edit="g-h2">Los cuatro pasos, con el juego 1</h3>
+  <ol class="steps">
+    <li><span class="t" data-edit="g-s1h">Elegimos una regla de resultado</span>
+      <span class="what" data-edit="g-s1">Tiene que ser algo ya demostrado: probado con un razonamiento, no solo visto en ejemplos.</span>
+      <span class="here" data-edit="g-s1x"><b>En el juego 1:</b> lo que da vueltas en una ronda de 7 lugares vuelve al mismo lugar cada 7 pasos.</span></li>
+    <li><span class="t" data-edit="g-s2h">Escribimos la regla de generación que la produce</span>
+      <span class="what" data-edit="g-s2">Una línea que diga solo cómo se pasa de un paso al siguiente. Es lo que va a ver la IA.</span>
+      <span class="here" data-edit="g-s2x"><b>En el juego 1:</b> cada casilla copia a su vecina de la izquierda. Eso hace que la luz dé vueltas.</span></li>
+    <li><span class="t" data-edit="g-s3h">Elegimos el comienzo y la pregunta lejana</span>
+      <span class="what" data-edit="g-s3">La pregunta tiene que quedar tan lejos que contando paso por paso no se llegue.</span>
+      <span class="here" data-edit="g-s3x"><b>En el juego 1:</b> una sola casilla prendida, y el paso un trillón.</span></li>
+    <li><span class="t" data-edit="g-s4h">Verificamos con cuentas, sin ninguna IA</span>
+      <span class="what" data-edit="g-s4">Hacemos la cuenta paso por paso hasta donde se llega. En cada paso la comparamos con lo que dice la regla de resultado, casilla por casilla. Si difieren una sola vez, el juego se tira.</span>
+      <span class="here" data-edit="g-s4x"><b>En el juego 1:</b> los pasos 0 a 3.000, sin ninguna diferencia.</span></li>
+  </ol>
+  <figure>
+    <div class="ctrl">
+      <button type="button" id="v1-ok">Verificar el juego 1</button>
+      <button type="button" class="quiet" id="v1-bad">Probar una regla equivocada</button>
+    </div>
+    <div class="out" id="v1-out" aria-live="polite"></div>
+    <div class="rows" id="v1-rows"></div>
+    <figcaption data-edit="g-cap">Con el primer botón, la página hace esa comparación ahora mismo. El segundo usa a propósito una regla de resultado equivocada, para ver cómo se nota el error.</figcaption>
+  </figure>
+
+  <h3 data-edit="g-h3">¿Y cómo sabemos que vale en el paso un trillón?</h3>
+  <p data-edit="g-4">Comparamos hasta el paso 3.000, y la pregunta es por el paso un trillón. La comparación sola no asegura que la regla siga valiendo tan lejos.</p>
+  <p data-edit="g-5">Lo asegura un razonamiento. En el juego 1 es corto: en una ronda de 7, correrse 7 lugares es volver a donde uno estaba. Eso es cierto en el paso 7 y en el paso un trillón.</p>
+  <p data-edit="g-6">La comparación sirve para otra cosa: para pescar errores nuestros al escribir el programa. Son dos seguros distintos. El razonamiento dice que la regla es cierta. La comparación dice que la escribimos bien.</p>
+
+  <h3 data-edit="g-h4">De dónde salen las reglas de resultado</h3>
+  <p data-edit="g-7">No las inventamos. Las tomamos de matemática que ya está demostrada. El juego 1 usa la más simple que hay: lo que da vueltas, vuelve. El juego 2 usa otra, que está más abajo.</p>
+  <ul>
+    <li data-edit="g-8">Eso tiene un costo. Si la regla ya está en los libros, una IA puede saberla de memoria. De eso se ocupan los juegos que siguen, que la disfrazan.</li>
+    <li data-edit="g-9">Hay dos tipos de juego que no se arman así: los que no tienen ninguna regla de resultado, y las trampas. Los vemos cuando lleguen.</li>
+    <li data-edit="g-10">La IA no tiene que encontrar la misma regla de resultado que elegimos nosotros. Si encuentra otra que da las respuestas correctas, saca el mismo puntaje: solo calificamos las respuestas.</li>
+  </ul>
+</section>
+
 <section>
   <div class="sechead"><h2 data-edit="c-h">Cómo se califica</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
   <p data-edit="c-1">La IA no contesta solo sí o no. Dice cuán segura está de que la casilla está prendida. Eso permite tratar distinto al que sabe, al que duda y al que inventa.</p>
@@ -168,7 +255,7 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     <span class="case"><span class="sq"></span><span class="sq">?</span><span class="sq"></span> → <span class="sq"></span> iguales: apagada</span>
   </div>
   <figure>
-    <canvas id="g2-canvas" width="606" height="360" role="img" aria-label="Los primeros pasos del juego 2: un dibujo de triángulos desordenados que no se repite"></canvas>
+    <canvas id="g2-canvas" width="606" height="360" role="img" aria-label="Los primeros pasos del juego 2: un dibujo de triángulos desordenados, sin repetición a la vista"></canvas>
     <div class="ctrl">
       <button type="button" id="g2-step">Un paso</button>
       <button type="button" id="g2-run">40 pasos más</button>
@@ -177,7 +264,7 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     </div>
     <figcaption data-edit="d-cap">Cada fila es un paso. Arriba está el paso 0.</figcaption>
   </figure>
-  <p data-edit="d-3">A diferencia del juego 1, acá el dibujo no vuelve a empezar. Lo dejamos correr 200.000 pasos y la fila no se repitió nunca. Esperar a que se repita no sirve.</p>
+  <p data-edit="d-3">A diferencia del juego 1, acá esperar a que el dibujo se repita no sirve. Lo dejamos correr 200.000 pasos y la fila no se repitió. Se repite, pero recién a los 375 billones de pasos.</p>
 
   <h3 data-edit="d-h2">La regla de resultado, escondida a simple vista</h3>
   <p data-edit="d-4">Sin embargo hay un orden. Después de 2 pasos, cada casilla depende solo de las dos casillas que están a distancia 2. Después de 4 pasos, de las que están a distancia 4. Después de 8, a distancia 8. Y así con 16, 32, 64...</p>
@@ -209,6 +296,40 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     <figcaption data-edit="d-cap2">Contando de a un paso, a mil millones de pasos por segundo, llegar al paso un trillón llevaría unos 31 años.</figcaption>
   </figure>
   <p data-edit="d-7">Eso es lo que una IA tendría que descubrir en este juego. Nadie se lo dice: tiene la regla de una línea, una computadora chica para probar, y la pregunta.</p>
+
+  <h3 data-edit="d-h3">Cómo armamos este juego</h3>
+  <p data-edit="d-8">Con los mismos cuatro pasos del juego 1.</p>
+  <ol class="steps">
+    <li><span class="t" data-edit="d-s1h">La regla de resultado</span>
+      <span class="what" data-edit="d-s1">Un hecho ya demostrado sobre esta regla: dar 2, 4, 8, 16... pasos da lo mismo que aplicarla una sola vez a esa distancia.</span></li>
+    <li><span class="t" data-edit="d-s2h">La regla de generación</span>
+      <span class="what" data-edit="d-s2">Una casilla queda prendida si sus dos vecinas eran distintas entre sí.</span></li>
+    <li><span class="t" data-edit="d-s3h">El comienzo y la pregunta lejana</span>
+      <span class="what" data-edit="d-s3">101 casillas, 8 prendidas, y el paso un trillón. Con ese tamaño la fila tarda unos 375 billones de pasos en volver a repetirse. Contando a mil millones de pasos por segundo serían más de 4 días. A la IA le vamos a dar mucho menos tiempo que eso, así que el truco del juego 1 no le alcanza.</span></li>
+    <li><span class="t" data-edit="d-s4h">La verificación</span>
+      <span class="what" data-edit="d-s4">Los pasos 0 a 3.000 contra la regla de resultado, sin ninguna diferencia.</span></li>
+  </ol>
+  <figure>
+    <div class="ctrl"><button type="button" id="v2-ok">Verificar el juego 2</button></div>
+    <div class="out" id="v2-out" aria-live="polite"></div>
+    <div id="v2-strips" hidden>
+      <div class="strip"><span id="v2-a-lbl"></span><canvas id="v2-a" width="606" height="18" role="img" aria-label="La fila calculada contando paso por paso"></canvas></div>
+      <div class="strip"><span id="v2-b-lbl"></span><canvas id="v2-b" width="606" height="18" role="img" aria-label="La misma fila calculada con la regla de resultado"></canvas></div>
+    </div>
+  </figure>
+
+  <h3 data-edit="d-h4">Por qué esa regla vale siempre</h3>
+  <p data-edit="d-9">Igual que en el juego 1, la comparación llega hasta el paso 3.000. Que la regla valga también en el paso un trillón lo asegura un razonamiento. Este se puede tocar.</p>
+  <figure>
+    <div class="rows pyr" id="pyr"></div>
+    <div class="out" id="pyr-out" aria-live="polite"></div>
+    <div class="out" id="pyr-all"></div>
+    <figcaption data-edit="d-capp">Arriba hay cinco casillas seguidas del paso 0. Tocalas para prenderlas o apagarlas. La de abajo es la casilla del medio, dos pasos después.</figcaption>
+  </figure>
+  <p data-edit="d-10">Las dos de las puntas cambian la casilla de abajo. Las otras tres no la cambian nunca.</p>
+  <p data-edit="d-11">La del medio no cuenta porque, al cambiarla, cambian a la vez las dos casillas del paso 1 que la miran. Y si las dos cambian juntas, siguen siendo iguales o distintas entre sí, igual que antes.</p>
+  <p data-edit="d-13">Las dos que están pegadas al medio tampoco cuentan. Solo cambian la casilla central del paso 1, y la de abajo no la mira: cada casilla mira a sus dos vecinas, no a la que tiene justo arriba.</p>
+  <p data-edit="d-12">O sea: 2 pasos dan lo mismo que aplicar la regla una vez a distancia 2. Esa regla tiene la misma forma que la original, así que el mismo razonamiento la lleva de 2 a 4, de 4 a 8, y así sin límite. Por eso vale en el paso un trillón, aunque nadie haya llegado hasta ahí contando.</p>
   <details>
     <summary>Ver el texto exacto que recibe la IA</summary>
 <pre>Sistema: una fila de 101 casillas en anillo (la última es vecina de la primera).
@@ -233,6 +354,7 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
   <ul>
     <li data-edit="e-1">La forma es siempre la misma: regla a la vista, pregunta lejana, regla de resultado por encontrar.</li>
     <li data-edit="e-2">Lo que cambia es cuán escondida está la regla de resultado. En el juego 1 salta a la vista. En el 2 hay que buscarla.</li>
+    <li data-edit="e-4">Los dos se armaron igual: empezando por la regla de resultado y verificando con cuentas.</li>
     <li data-edit="e-3">Un aviso sobre el juego 2: su regla de resultado está en los libros, y una IA puede conocerla de memoria. Por eso los juegos que siguen la disfrazan. Y por eso habrá también juegos sin ninguna regla de resultado, para ver si la IA inventa una.</li>
   </ul>
 </section>
@@ -293,6 +415,37 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
   }
   function score(p, truth) { return 1 - 4 * (p - truth) * (p - truth); }
   function sameRow(a, b) { for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; }
+  // Verificación: la cuenta paso por paso contra la regla de resultado, casilla por casilla.
+  // Devuelve cuántos pasos comparó y, si hubo una diferencia, en qué paso (diffAt; -1 si no hubo).
+  function verify(start, stepFn, jumpFn, until) {
+    var counted = start;
+    for (var t = 0; t <= until; t++) {
+      var ruled = jumpFn(start, BigInt(t));
+      if (!sameRow(counted, ruled)) return { compared: t + 1, diffAt: t, shown: t, counted: counted, ruled: ruled };
+      if (t < until) counted = stepFn(counted);
+    }
+    return { compared: until + 1, diffAt: -1, shown: until, counted: counted, ruled: jumpFn(start, BigInt(until)) };
+  }
+  // Una regla de resultado equivocada a propósito para el juego 1: "todo se repite cada 8 pasos".
+  function g1JumpWrong(row, steps) {
+    var n = row.length, k = Number(steps % 8n), out = new Array(n);
+    for (var i = 0; i < n; i++) out[i] = row[(((i - k) % n) + n) % n];
+    return out;
+  }
+  // Cinco casillas seguidas del paso 0: las tres que salen en el paso 1 y la del medio en el paso 2.
+  function pyramid(top) {
+    var mid = [top[0] ^ top[2], top[1] ^ top[3], top[2] ^ top[4]];
+    return { mid: mid, bottom: mid[0] ^ mid[2] };
+  }
+  // De las 32 combinaciones de esas cinco, en cuántas la de abajo queda prendida justo cuando las puntas son distintas.
+  function pyramidHolds() {
+    var ok = 0;
+    for (var m = 0; m < 32; m++) {
+      var top = [m & 1, (m >> 1) & 1, (m >> 2) & 1, (m >> 3) & 1, (m >> 4) & 1];
+      if (pyramid(top).bottom === (top[0] ^ top[4])) ok++;
+    }
+    return ok;
+  }
   /*LOGIC-END*/
 
   if (typeof document === "undefined") return;
@@ -448,8 +601,95 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
   $("g2-jump").addEventListener("click", g2DoJump);
   $("g2-far").addEventListener("keydown", function (e) { if (e.key === "Enter") g2DoJump(); });
 
-  function redrawCanvases() { g2Draw(); g2Compare(); g2DoJump(); }
+  // ---------- verificación a la vista: la cuenta paso por paso contra la regla de resultado ----------
+  var V_UNTIL = 3000;
+  function took(ms) { return ms < 1 ? "menos de 1 milisegundo" : Math.round(ms) + " milisegundos"; }
+  function v1Run(wrong) {
+    var res = verify(g1Start(), g1Step, wrong ? g1JumpWrong : g1Jump, V_UNTIL);
+    if (res.diffAt < 0) {
+      $("v1-out").innerHTML = "Comparamos <b>" + withDots(res.compared) + "</b> pasos (del 0 al " + withDots(V_UNTIL) +
+        "), las 7 casillas de cada uno: <b>ninguna diferencia</b>. Abajo, el paso " + withDots(res.shown) + " calculado de las dos maneras.";
+    } else {
+      $("v1-out").innerHTML = (wrong ? "Con la regla equivocada «todo se repite cada 8 pasos», la" : "La") +
+        " cuenta y la regla <b>difieren en el paso " + withDots(res.diffAt) + "</b>. Contando, la luz está en la casilla <b>" +
+        res.counted.indexOf(1) + "</b>. La regla dice casilla <b>" + res.ruled.indexOf(1) + "</b>. Un juego así se tira.";
+    }
+    $("v1-rows").innerHTML = rowHtml("contando", res.counted, "") + rowHtml("la regla", res.ruled, res.diffAt < 0 ? "" : "diff");
+  }
+  $("v1-ok").addEventListener("click", function () { v1Run(false); });
+  $("v1-bad").addEventListener("click", function () { v1Run(true); });
+
+  var v2Last = null;
+  function v2Draw() { drawStrip($("v2-a"), v2Last.counted); drawStrip($("v2-b"), v2Last.ruled); }
+  function v2Run() {
+    var t0 = performance.now();
+    var res = verify(g2Start(), g2Step, function (s, t) { return g2Jump(s, t).row; }, V_UNTIL);
+    var ms = performance.now() - t0;
+    v2Last = res;
+    $("v2-out").innerHTML = res.diffAt < 0
+      ? "Comparamos <b>" + withDots(res.compared) + "</b> pasos (del 0 al " + withDots(V_UNTIL) +
+        "), las 101 casillas de cada uno: <b>ninguna diferencia</b>. Tardó " + took(ms) + "."
+      : "La cuenta y la regla <b>difieren en el paso " + withDots(res.diffAt) + "</b>. Un juego así se tira.";
+    $("v2-a-lbl").textContent = "El paso " + withDots(res.shown) + ", contando de a un paso:";
+    $("v2-b-lbl").textContent = "El paso " + withDots(res.shown) + ", con la regla de resultado:";
+    $("v2-strips").hidden = false;
+    v2Draw();
+  }
+  $("v2-ok").addEventListener("click", v2Run);
+
+  // ---------- por qué vale la regla del juego 2: cinco casillas, dos pasos ----------
+  var PYR_NAMES = ["La casilla de la punta izquierda", "La casilla pegada al medio, a la izquierda", "La casilla del medio",
+    "La casilla pegada al medio, a la derecha", "La casilla de la punta derecha"];
+  var pyr = { top: [1, 0, 1, 1, 0], cells: [], mid: [], bottom: null };
+  function pyrBuild() {
+    var box = $("pyr");
+    function row(label) {
+      var r = document.createElement("div"), l = document.createElement("span");
+      r.className = "row"; l.className = "lbl"; l.textContent = label;
+      r.appendChild(l); box.appendChild(r);
+      return r;
+    }
+    function cell(parent, tag, cls) { var e = document.createElement(tag); e.className = cls; parent.appendChild(e); return e; }
+    function gap(parent) { cell(parent, "span", "sq gap").setAttribute("aria-hidden", "true"); }
+    var r0 = row("paso 0"), r1 = row("paso 1"), r2 = row("paso 2");
+    [0, 1, 2, 3, 4].forEach(function (i) {
+      var b = cell(r0, "button", "sq");
+      b.type = "button";
+      b.addEventListener("click", function () { pyr.top[i] ^= 1; pyrRender(); });
+      pyr.cells.push(b);
+    });
+    gap(r1); for (var j = 0; j < 3; j++) pyr.mid.push(cell(r1, "span", "sq")); gap(r1);
+    gap(r2); gap(r2); pyr.bottom = cell(r2, "span", "sq"); gap(r2); gap(r2);
+  }
+  function pyrRender() {
+    var res = pyramid(pyr.top), differ = pyr.top[0] !== pyr.top[4];
+    pyr.cells.forEach(function (b, i) {
+      b.className = "sq" + (pyr.top[i] ? " on" : "");
+      b.setAttribute("aria-pressed", String(!!pyr.top[i]));
+      b.setAttribute("aria-label", PYR_NAMES[i] + ": " + (pyr.top[i] ? "prendida" : "apagada"));
+    });
+    pyr.mid.forEach(function (e, j) { e.className = "sq" + (res.mid[j] ? " on" : ""); });
+    pyr.bottom.className = "sq" + (res.bottom ? " on" : "");
+    $("pyr-out").innerHTML = "Las dos de las puntas son <b>" + (differ ? "distintas" : "iguales") +
+      "</b>: la de abajo queda <b>" + (res.bottom ? "prendida" : "apagada") + "</b>.";
+  }
+
+  // ---------- el enlace del principio lleva a la sección de armado ----------
+  $("to-build").addEventListener("click", function (e) {
+    var target = $("build");
+    if (!target || !target.scrollIntoView) return;
+    e.preventDefault();
+    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
+  });
+
+  function redrawCanvases() { g2Draw(); g2Compare(); g2DoJump(); if (v2Last) v2Draw(); }
   g1Reset(2); g1DoJump(); scoreRender(); g2Reset(G2_ROWS - 1); g2Compare(); g2DoJump();
+  $("v1-out").textContent = "Todavía no se hizo. Apretá un botón.";
+  $("v2-out").textContent = "Todavía no se hizo. Apretá el botón.";
+  pyrBuild(); pyrRender();
+  $("pyr-all").innerHTML = "La página probó las 32 maneras posibles de prender y apagar esas cinco casillas. En <b>" +
+    pyramidHolds() + "</b> de las 32, la de abajo queda prendida cuando las dos puntas son distintas, y apagada cuando son iguales.";
   if (window.matchMedia) {
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
     if (mq.addEventListener) mq.addEventListener("change", redrawCanvases);

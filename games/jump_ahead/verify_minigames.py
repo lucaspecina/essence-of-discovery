@@ -2,6 +2,7 @@
 
 Uso:  python games/jump_ahead/verify_minigames.py
 """
+import math
 import time
 
 from minigames import ALL, brief, picture, score
@@ -29,6 +30,22 @@ def find_repeat(game, limit):
     return None
 
 
+def exact_period(game, multiple, primes):
+    """El primer paso > 0 en que la fila vuelve a ser la del comienzo, sabiendo que en `multiple` vuelve.
+
+    Contando no se llega tan lejos: usa la regla de resultado, ya comparada con la cuenta larga.
+    `primes` son los factores primos de `multiple`; se saca cada uno mientras la fila siga volviendo.
+    """
+    assert all(p > 1 and all(p % d for d in range(2, math.isqrt(p) + 1)) for p in primes), "hay un factor no primo"
+    assert math.prod(primes) == multiple, "la factorización no cierra"
+    assert game.jump(game.start, multiple) == game.start, "en ese paso la fila no vuelve al comienzo"
+    period = multiple
+    for p in primes:
+        while period % p == 0 and game.jump(game.start, period // p) == game.start:
+            period //= p
+    return period
+
+
 def main():
     for game in ALL:
         print("=" * 78)
@@ -46,7 +63,7 @@ def main():
         if rep:
             print(f"[dato] contando paso por paso, la fila se repite: el paso {rep[1]} es igual al {rep[0]}")
         else:
-            print("[dato] contando 200.000 pasos, la fila no se repite nunca: no alcanza con esperar")
+            print("[dato] contando 200.000 pasos, la fila no se repite: no alcanza con esperar")
 
         t0 = time.perf_counter()
         truths = [game.truth(q) for q in game.questions]
@@ -70,6 +87,13 @@ def main():
         assert state == far_step(game.start, distance), distance
     print("=" * 78)
     print("[ok] juego 2: dar 2, 4, 8 ... 1024 pasos es igual a aplicar la regla UNA vez mirando a esa distancia")
+
+    # Cuándo vuelve a repetirse la fila del juego 2. Con 101 casillas vuelve seguro tras 2^50 - 1 pasos
+    # (se comprueba adentro); el primer paso en que vuelve es un divisor de ese número.
+    period = exact_period(game, 2**50 - 1, (3, 11, 31, 251, 601, 1801, 4051))
+    days = period / 1e9 / 86400
+    print(f"[dato] juego 2: la fila vuelve a ser la del comienzo recién en el paso {period:,}".replace(",", ".")
+          + f" (a mil millones de pasos por segundo, {days:.1f} días contando)")
 
     print("\nPrimeros pasos del juego 1:")
     state = ALL[0].start
