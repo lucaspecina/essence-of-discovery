@@ -21,7 +21,7 @@ import time
 
 import numpy as np
 
-from mixed.instances import mixed_games, plain_game, twin_game
+from mixed.instances import TWINS, mixed_games, plain_game, twin_games
 from mixed.linear import count_revealing_orders, naive_affine_test, step_table
 from mixed.solver import blind_search_rate, solve_by_structure
 from mixed.twin import far_state_from_cycle, find_cycle
@@ -118,7 +118,8 @@ def main():
         truth = check_mixed(game, long_run)
         print("  respuestas exactas:", [game.alphabet[s] if game.game_id != "plain-5" else str(s) for s in truth],
               "en las casillas", list(game.cells))
-    check_twin(twin_game(), long_run)
+    for game in twin_games():
+        check_twin(game, long_run)
 
 
 if __name__ == "__main__":

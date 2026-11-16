@@ -9,7 +9,7 @@ con 27 esos dos se repetían a los 40 y 24 millones de pasos, y una IA podía re
     mix-8b     8 letras (3 bits).   1 de cada 30.
     mix-17     17 letras.           1 de cada 1.307.674.368.000.
     mix-25p    25 letras (pares).   1 de cada 1,3·10^21.
-    twin-5     5 letras, tabla sorteada al azar: sin regla de resultado conocida. Control: "no sé".
+    twin-a/b/c 5 letras, tabla sorteada al azar: sin regla de resultado conocida (ver TWINS abajo).
 """
 from __future__ import annotations
 
@@ -37,5 +37,20 @@ def mixed_games() -> list:
     ]
 
 
-def twin_game(seed: int = 5001) -> TwinGame:
-    return TwinGame("twin-5", 5, N, seed, FAR, (1, 6, 10, 15, 19, 24))
+# Tablas sorteadas al azar: nadie las estudió y no esconden ningún sistema conocido. La respuesta lejana la
+# sacamos contando en C hasta que la fila se repite. (comienzo del ciclo, largo del ciclo), medidos así:
+TWINS = {
+    "twin-a": dict(n=27, seed=5003, cycle=(2_219_180, 27), cells=(3, 6, 8, 15, 17, 24)),               # contando 2,3 millones de pasos se ve
+    "twin-b": dict(n=27, seed=5002, cycle=(4_574_076, 80_926_938)),         # hacen falta 85 millones
+    "twin-c": dict(n=31, seed=5001, cycle=(35_410_645, 10_799_066_256)),    # hacen falta 10.800 millones
+}
+
+
+def twin_game(game_id: str = "twin-c") -> TwinGame:
+    spec = TWINS[game_id]
+    cells = spec.get("cells", (1, 6, 10, 15, 19, 24))
+    return TwinGame(game_id, 5, spec["n"], spec["seed"], FAR, cells)
+
+
+def twin_games() -> list:
+    return [twin_game(game_id) for game_id in TWINS]

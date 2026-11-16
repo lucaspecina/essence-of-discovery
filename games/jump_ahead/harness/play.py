@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness.sandbox import Sandbox  # noqa: E402
 from mixed.brief import make_brief  # noqa: E402
-from mixed.instances import mixed_games, plain_game, twin_game  # noqa: E402
+from mixed.instances import mixed_games, plain_game, twin_games  # noqa: E402
 from mixed.scoring import score_cell  # noqa: E402
 
 # Dólares por millón de tokens (entrada, salida). De una búsqueda web del 16-nov-2026, no de la página
@@ -48,16 +48,14 @@ _ledger_lock = threading.Lock()
 
 
 def all_games() -> dict:
-    games = {g.game_id: g for g in [plain_game()] + mixed_games()}
-    games["twin-5"] = twin_game()
-    return games
+    return {g.game_id: g for g in [plain_game()] + mixed_games() + twin_games()}
 
 
 def truth_of(game) -> list:
     """La respuesta exacta de cada casilla preguntada (número de símbolo)."""
     if hasattr(game, "truth"):
         return game.truth()
-    stored = json.loads(TWIN_TRUTH.read_text())[str(game.seed)]      # contada en C: ver verify_mixed.py --long
+    stored = json.loads(TWIN_TRUTH.read_text())[game.game_id]        # contada en C: ver mixed/twin.py
     return [stored["far_state"][c] for c in game.cells]
 
 
@@ -155,6 +153,53 @@ def play_openai(model: str, effort: str | None, text: str, sandbox: Sandbox):
     return messages, usage, final
 
 
+def play_responses(model: str, effort: str | None, text: str, sandbox: Sandbox):
+    """Conversación con herramientas por la API Responses (modelos GPT; Astra solo acepta herramientas por acá)."""
+    from openai import OpenAI
+
+    client = OpenAI(base_url=os.environ["AZURE_FOUNDRY_BASE_URL"].rstrip("/") + "/",
+                    api_key=os.environ["AZURE_INFERENCE_CREDENTIAL"], timeout=3600, max_retries=3)
+    tools = [{"type": "function", "name": "run_python", "description": TOOL_DESCRIPTION,
+              "parameters": OPENAI_TOOLS[0]["function"]["parameters"]}]
+    transcript = [{"role": "user", "content": text}]
+    usage = {"calls": 0, "input": 0, "output": 0, "reasoning": 0, "cached": 0}
+    pending, previous, final, asked_again = [{"role": "user", "content": text}], None, None, False
+    for _ in range(MAX_TURNS):
+        kwargs = {"model": model, "input": pending, "tools": tools, "max_output_tokens": 64000}
+        if effort:
+            kwargs["reasoning"] = {"effort": effort}
+        if previous:
+            kwargs["previous_response_id"] = previous
+        resp = client.responses.create(**kwargs)
+        previous, u = resp.id, resp.usage
+        usage["calls"] += 1
+        usage["input"] += u.input_tokens
+        usage["output"] += u.output_tokens
+        usage["reasoning"] += getattr(getattr(u, "output_tokens_details", None), "reasoning_tokens", 0) or 0
+        usage["cached"] += getattr(getattr(u, "input_tokens_details", None), "cached_tokens", 0) or 0
+        calls = [item for item in resp.output if item.type == "function_call"]
+        transcript.append({"role": "assistant", "content": resp.output_text or "",
+                           "tool_calls": [{"id": c.call_id, "arguments": c.arguments} for c in calls]})
+        if calls:
+            pending = []
+            for call in calls:
+                try:
+                    code = json.loads(call.arguments).get("code")
+                except (json.JSONDecodeError, AttributeError):
+                    code = None
+                output = run_tool(sandbox, code)
+                pending.append({"type": "function_call_output", "call_id": call.call_id, "output": output})
+                transcript.append({"role": "tool", "tool_call_id": call.call_id, "content": output})
+            continue
+        final = resp.output_text
+        if parse_answers(final) is not None or asked_again:
+            break
+        asked_again = True
+        pending = [{"role": "user", "content": ASK_AGAIN}]
+        transcript.append(pending[0])
+    return transcript, usage, final
+
+
 def cost_of(model: str, usage: dict) -> float:
     price_in, price_out = PRICES.get(model, (10.0, 50.0))
     return usage["input"] / 1e6 * price_in + usage["output"] / 1e6 * price_out
@@ -179,6 +224,8 @@ def play_one(game, model: str, effort: str | None, hint: bool, out_dir: Path, bu
             from harness import claude_player
             messages, usage, final = claude_player.play(model, effort, text, sandbox, run_tool, parse_answers,
                                                         TOOL_DESCRIPTION, ASK_AGAIN, MAX_TURNS)
+        elif model.startswith("gpt-"):
+            messages, usage, final = play_responses(model, effort, text, sandbox)
         else:
             messages, usage, final = play_openai(model, effort, text, sandbox)
     except Exception as exc:  # noqa: BLE001  (se guarda y se informa; no se inventa un resultado)
