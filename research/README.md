@@ -26,7 +26,8 @@ pruebas puntuales de WAGER.
 ## proposals
 
 - [Descubrir = encontrar un atajo verificable](proposals/2026-11-15-discovery-as-finding-a-shortcut.md) — la cumbre de ARC, la idea, las críticas y el trabajo previo de otros (§8).
-- [Que la IA entregue la "guía de campo" de un mundo que armamos nosotros](proposals/2026-11-16-field-guide-executable-catalog.md) — propuesta tras la primera prueba: mundos con partículas y choques plantados; la IA entrega afirmaciones comprobables y un programa las usa para lograr objetivos que ella no vio. **Sin decidir.**
+- [Que la IA entregue un programa que resuma el mundo, y compararlo con la realidad](proposals/2026-11-16-outrun-a-program-that-summarizes.md) — **la propuesta vigente**: programa entregado, comparado contra la regla corrida, midiendo tamaño y tiempo. Aprobada por Lucas para una primera prueba.
+- [Que la IA entregue la "guía de campo" de un mundo que armamos nosotros](proposals/2026-11-16-field-guide-executable-catalog.md) — propuesta tras la primera prueba: mundos con partículas y choques plantados; la IA entrega afirmaciones comprobables y un programa las usa para lograr objetivos que ella no vio. Reemplazada por la de arriba.
 
 ## readings
 

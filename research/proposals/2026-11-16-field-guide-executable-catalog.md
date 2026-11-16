@@ -1,6 +1,8 @@
 # Propuesta (16-nov-2026): que la IA entregue la "guía de campo" de un mundo que armamos nosotros
 
-**Estado: propuesta para Lucas. Nada construido, nada corrido, nada decidido.**
+**Estado: reemplazada el mismo día por una versión más simple, propuesta por Lucas:**
+[que la IA entregue un programa que resuma el mundo](2026-11-16-outrun-a-program-that-summarizes.md).
+**Queda como registro del camino y de lo que dijeron los críticos. Nada de esto se construyó.**
 
 Nombre de trabajo del juego: `field-guide` (guía de campo: el cuaderno donde un naturalista anota qué
 existe en un lugar y cómo se comporta). El nombre lo decide Lucas.
