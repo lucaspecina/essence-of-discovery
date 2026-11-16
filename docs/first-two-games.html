@@ -105,8 +105,8 @@ button.sq.on { background: var(--cell); }
 
 <header>
   <div class="kicker">jump-ahead · mini-juegos</div>
-  <h1 data-edit="title">Los dos primeros juegos</h1>
-  <p class="lead" data-edit="lead">Qué recibe la IA, qué tiene que encontrar, cómo armamos cada juego y cómo la calificamos. Con dos juegos que podés tocar.</p>
+  <h1 data-edit="title">Cómo se arma un juego</h1>
+  <p class="lead" data-edit="lead">Primero, la lógica de cómo construimos un juego, de a un paso por vez. Después, los dos juegos que ya están armados.</p>
   <div class="status" data-edit="status"><b>Los dos juegos están armados y verificados con cuentas.</b> Todavía ninguna IA los jugó.</div>
   <div class="bar" id="editbar" hidden>
     <button type="button" id="edit-start">Editar texto</button>
@@ -117,41 +117,146 @@ button.sq.on { background: var(--cell); }
 </header>
 
 <section>
-  <div class="sechead"><h2 data-edit="a-h">Las tres piezas de un juego</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
-  <p data-edit="a-1">Todos los juegos tienen la misma forma. Son tres piezas.</p>
-  <div class="pieces">
-    <div class="piece"><b data-edit="a-p1h">1. Una regla de generación</b><span data-edit="a-p1">Dice cómo cambia una fila de casillas de un paso al siguiente. Es corta, y la IA la ve entera.</span></div>
-    <div class="piece"><b data-edit="a-p2h">2. Una pregunta lejana</b><span data-edit="a-p2">Por ejemplo: ¿cómo va a estar la casilla 1 en el paso un trillón? Calculando paso por paso no se llega.</span></div>
-    <div class="piece"><b data-edit="a-p3h">3. Una regla de resultado</b><span data-edit="a-p3">Dice qué pasa lejos sin recorrer los pasos del medio. No se la damos: es lo que la IA tiene que encontrar.</span></div>
-  </div>
-  <p data-edit="a-2">Nosotros sí conocemos la regla de resultado. Con ella calculamos la respuesta exacta, y con eso calificamos.</p>
-  <p data-edit="a-3">¿Y cómo la conocemos, si al paso un trillón tampoco llegamos contando? Porque el juego se arma al revés: <b>primero elegimos la regla de resultado</b>, y después escribimos el juego a partir de ella. El paso a paso está más abajo, después del juego 1.</p>
-  <p class="more"><a href="#build" id="to-build">Ir a «Cómo se arma un juego» ↓</a></p>
+  <div class="kicker">Primera parte · la lógica</div>
+  <div class="sechead"><h2 data-edit="p1-h">1. Qué queremos tener</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p1-1">Queremos tomarle un examen a una IA. Para eso necesitamos preguntas que cumplan dos cosas.</p>
+  <ul>
+    <li data-edit="p1-2"><b>Que nosotros sepamos la respuesta.</b> Si no, no podemos corregir.</li>
+    <li data-edit="p1-3"><b>Que no se puedan contestar a pura fuerza.</b> Si alcanza con hacer cuentas largas, no medimos nada: cualquier computadora hace cuentas largas.</li>
+  </ul>
+  <p data-edit="p1-4">Todo lo que sigue es cómo conseguir preguntas así.</p>
 </section>
 
 <section>
-  <div class="sechead"><h2 data-edit="b-h">Juego 1: la luz que da vueltas</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
-  <p data-edit="b-1">Hay 7 casillas en ronda: la última es vecina de la primera. Una sola está prendida.</p>
-  <p data-edit="b-2">La <b>regla de generación</b> es una línea: cada casilla copia a su vecina de la izquierda. Eso hace que la luz se corra un lugar por paso.</p>
+  <div class="sechead"><h2 data-edit="p2-h">2. Un mundo chiquito con una regla</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p2-1">Empecemos por lo más simple que hay. Una fila de 7 casillas. Cada casilla está prendida o apagada. Están en ronda: la última es vecina de la primera.</p>
+  <p data-edit="p2-2">Y una regla que dice cómo cambia la fila de un momento al siguiente. A cada cambio lo llamamos <b>un paso</b>. La regla es esta: <b>cada casilla copia a su vecina de la izquierda.</b></p>
   <figure>
     <div class="rows" id="g1-rows" aria-live="polite"></div>
     <div class="ctrl">
       <button type="button" id="g1-step">Un paso</button>
       <button type="button" class="quiet" id="g1-reset">Volver a empezar</button>
     </div>
-    <figcaption data-edit="b-cap">Apretá «Un paso» varias veces y mirá qué pasa al llegar al paso 7.</figcaption>
+    <figcaption data-edit="p2-cap">Apretá «Un paso» varias veces. Cada fila nueva sale de aplicarle la regla a la fila anterior.</figcaption>
   </figure>
-  <p data-edit="b-3">En el paso 7 la fila vuelve a estar igual que al principio, y desde ahí se repite todo. Esa es la <b>regla de resultado</b> de este juego: todo se repite cada 7 pasos, así que solo importa lo que sobra al dividir el paso por 7.</p>
+  <p data-edit="p2-3">A esa regla la llamamos <b>regla de generación</b>, porque genera cada fila a partir de la anterior. Fijate que solo habla del paso siguiente. No dice nada de lo que pasa lejos.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p3-h">3. Una pregunta lejana</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p3-1">Ahora la pregunta: <b>¿dónde va a estar la luz en el paso un trillón?</b> Un trillón es un 1 con 18 ceros.</p>
+  <p data-edit="p3-2">La forma directa es apretar «Un paso» un trillón de veces. Una computadora que haga mil millones de pasos por segundo tardaría unos 31 años. A pura fuerza no se llega.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p4-h">4. Pero se puede contestar pensando</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p4-1">Mirá de nuevo el dibujo de arriba. La regla hace que la luz se corra un lugar por paso. Hay 7 lugares en ronda. Entonces a los 7 pasos la luz dio la vuelta entera y está donde empezó.</p>
+  <p data-edit="p4-2">Y si a los 7 pasos todo está como al principio, a los 14 también, y a los 21 también. Todo se repite cada 7 pasos.</p>
+  <p data-edit="p4-3">Entonces, para saber qué pasa en un paso lejano, no hace falta recorrerlo. Alcanza con dividir ese número por 7 y mirar cuánto sobra. Si sobra 1, la fila está igual que en el paso 1.</p>
   <figure>
     <div class="ctrl">
-      <label for="g1-far">Probala con un paso lejano:</label>
+      <label for="g1-far">Probalo con cualquier paso:</label>
       <input type="text" id="g1-far" inputmode="numeric" value="1000000000000000000" aria-describedby="g1-out">
-      <button type="button" id="g1-jump">Saltar</button>
+      <button type="button" id="g1-jump">Calcular</button>
     </div>
     <div class="out" id="g1-out" aria-live="polite"></div>
     <div class="rows" id="g1-far-row"></div>
   </figure>
-  <p data-edit="b-4">Este juego es fácil a propósito. Sirve para ver las piezas, y de control: si una IA falla acá, lo que está roto es nuestro programa, no la IA.</p>
+  <p data-edit="p4-4">Eso que acabamos de encontrar, «todo se repite cada 7 pasos», es lo que llamamos <b>patrón emergente</b> o <b>regla de resultado</b>. Es algo cierto sobre el futuro lejano que la regla de generación no dice, pero que sale de ella.</p>
+</section>
+
+<section id="build">
+  <div class="sechead"><h2 data-edit="p5-h">5. De dónde salió ese patrón</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p5-1">Fijate bien en lo que pasó recién, porque es la clave de todo.</p>
+  <p data-edit="p5-2"><b>Nadie eligió el patrón.</b> Escribimos una regla. Después pensamos qué hace esa regla a la larga. Y el patrón apareció solo, como consecuencia.</p>
+  <p data-edit="p5-3">O sea que el patrón emergente no se elige por separado. Viene pegado a la regla. Cada regla trae el suyo, si es que trae alguno.</p>
+  <p data-edit="p5-4">Por eso la pregunta «ya elegí el patrón, ¿qué regla lo genera?» no es el camino que usamos. Vamos al revés: <b>de la regla al patrón</b>.</p>
+  <figure class="orders" role="group" aria-label="El camino para armar un juego">
+    <div class="order"><span class="who">El camino</span>
+      <span class="chip first">una regla corta</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">pensar qué hace a la larga</span><span class="arrow" aria-hidden="true">→</span>
+      <span class="chip">aparece un patrón (o no)</span></div>
+    <figcaption data-edit="p5-cap">Se prueba con una regla y se mira si trae patrón. No al revés.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p6-h">6. El problema: casi ninguna regla trae patrón</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p6-1">Con la regla de copiar a la vecina fue fácil. Pero si uno escribe una regla corta cualquiera, lo normal es que no se pueda decir nada del futuro lejano. La única forma conocida de saber qué pasa es hacer todos los pasos.</p>
+  <p data-edit="p6-2">Hay reglas igual de cortas que la nuestra, estudiadas durante décadas, para las que nadie encontró nunca un patrón. La más famosa se llama regla 30.</p>
+  <p data-edit="p6-3">Entonces el trabajo de armar un juego no es inventar un patrón. Es <b>encontrar reglas que sí traigan uno</b>, y que podamos estar seguros de que es cierto.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p7-h">7. De dónde sacamos reglas que sí traen patrón</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p7-1">De dos lugares.</p>
+  <ol class="steps">
+    <li><span class="t" data-edit="p7-ah">Reglas tan simples que el patrón lo razonamos nosotros</span>
+      <span class="what" data-edit="p7-a">Es lo que hicimos arriba. La regla solo mueve las cosas de lugar, así que se puede seguir con la cabeza qué pasa. Ese es el juego 1.</span></li>
+    <li><span class="t" data-edit="p7-bh">Reglas que los matemáticos ya estudiaron</span>
+      <span class="what" data-edit="p7-b">Hay reglas para las que alguien ya encontró el patrón y lo demostró, y está escrito en libros. Tomamos la regla y el patrón de ahí. Ese es el juego 2, que está más abajo.</span></li>
+  </ol>
+  <p data-edit="p7-2"><b>¿Quién elige?</b> Nosotros: vos y yo. Nadie más interviene, y ninguna IA.</p>
+  <p data-edit="p7-3"><b>¿Con qué criterio?</b> Una regla entra como juego si cumple cuatro cosas.</p>
+  <ul>
+    <li data-edit="p7-c1"><b>Trae un patrón demostrado.</b> Tiene que haber un razonamiento que diga por qué vale siempre. Verlo en algunos ejemplos no alcanza.</li>
+    <li data-edit="p7-c2"><b>A pura fuerza no se llega.</b> La pregunta va tan lejos que hacer todos los pasos es imposible.</li>
+    <li data-edit="p7-c3"><b>El patrón no salta a la vista.</b> Si se ve de entrada, el examen es demasiado fácil. El juego 1 no cumple esto a propósito: es el de calentamiento.</li>
+    <li data-edit="p7-c4"><b>Pasa la verificación.</b> Es lo que sigue.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p8-h">8. La verificación</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="p8-1">Aunque el patrón esté demostrado, nosotros podemos equivocarnos al escribirlo en el programa. Entonces lo controlamos así.</p>
+  <p data-edit="p8-2">Hacemos los primeros 3.000 pasos de las dos maneras: uno por uno con la regla de generación, y de un salto con el patrón. En cada paso comparamos las dos filas, casilla por casilla. Si alguna vez difieren, el juego se tira.</p>
+  <figure>
+    <div class="ctrl">
+      <button type="button" id="v1-ok">Verificar el juego 1</button>
+      <button type="button" class="quiet" id="v1-bad">Probar con un patrón equivocado</button>
+    </div>
+    <div class="out" id="v1-out" aria-live="polite"></div>
+    <div class="rows" id="v1-rows"></div>
+    <figcaption data-edit="p8-cap">Con el primer botón, la página hace esa comparación ahora mismo. El segundo usa a propósito un patrón equivocado («todo se repite cada 8 pasos»), para ver cómo salta el error.</figcaption>
+  </figure>
+  <p data-edit="p8-3">Son dos seguros distintos. El razonamiento dice que el patrón vale en el paso un trillón. La comparación dice que lo escribimos bien.</p>
+</section>
+
+<section>
+  <div class="sechead"><h2 data-edit="p9-h">9. La receta completa</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <ol class="steps">
+    <li><span class="t" data-edit="p9-1h">Buscamos una regla corta que traiga patrón</span>
+      <span class="what" data-edit="p9-1">Una que podamos razonar nosotros, o una que ya esté resuelta en los libros.</span></li>
+    <li><span class="t" data-edit="p9-2h">Nos aseguramos de que el patrón esté demostrado</span>
+      <span class="what" data-edit="p9-2">Tiene que haber un razonamiento, no solo ejemplos.</span></li>
+    <li><span class="t" data-edit="p9-3h">Elegimos cómo empieza la fila y la pregunta lejana</span>
+      <span class="what" data-edit="p9-3">Tan lejos que haciendo todos los pasos no se llegue.</span></li>
+    <li><span class="t" data-edit="p9-4h">Calculamos la respuesta con el patrón</span>
+      <span class="what" data-edit="p9-4">Esa es la respuesta contra la que corregimos.</span></li>
+    <li><span class="t" data-edit="p9-5h">Verificamos con la computadora</span>
+      <span class="what" data-edit="p9-5">Los primeros 3.000 pasos, de las dos maneras.</span></li>
+  </ol>
+  <p data-edit="p9-6">A la IA le damos solo la regla de generación, la fila del comienzo y la pregunta. El patrón no. Encontrarlo es el examen.</p>
+  <ul>
+    <li data-edit="p9-7">Un límite de esta receta: solo salen juegos cuyo patrón ya conocía alguien. Una IA puede saberlo de memoria. Por eso los juegos que siguen lo van a disfrazar.</li>
+    <li data-edit="p9-8">También va a haber juegos con reglas que no traen ningún patrón conocido, y juegos trampa. Esos se arman distinto y los vemos cuando lleguen.</li>
+  </ul>
+  <p class="more"><a href="#build" id="to-build">Volver a «De dónde salió ese patrón» ↑</a></p>
+</section>
+
+<section>
+  <div class="kicker">Segunda parte · los dos juegos armados</div>
+  <div class="sechead"><h2 data-edit="b-h">Juego 1: la luz que da vueltas</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
+  <p data-edit="b-1">Es el ejemplo de arriba, completo.</p>
+  <ul>
+    <li data-edit="b-2"><b>Regla de generación:</b> cada casilla copia a su vecina de la izquierda.</li>
+    <li data-edit="b-3"><b>Comienzo:</b> 7 casillas en ronda, una prendida.</li>
+    <li data-edit="b-4"><b>Pregunta:</b> cómo está cada casilla en el paso un trillón.</li>
+    <li data-edit="b-5"><b>Patrón:</b> todo se repite cada 7 pasos.</li>
+    <li data-edit="b-6"><b>De dónde salió:</b> lo razonamos nosotros.</li>
+    <li data-edit="b-7"><b>Respuesta:</b> un trillón dividido 7 sobra 1, así que la fila está igual que en el paso 1: la luz está en la casilla 1.</li>
+  </ul>
+  <p data-edit="b-8">Es fácil a propósito. Sirve de control: si una IA falla acá, lo que está roto es nuestro programa, no la IA.</p>
   <details>
     <summary>Ver el texto exacto que recibe la IA</summary>
 <pre>Sistema: una fila de 7 casillas en anillo (la última es vecina de la primera).
@@ -170,69 +275,12 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
   </details>
 </section>
 
-<section id="build">
-  <div class="sechead"><h2 data-edit="g-h">Cómo se arma un juego</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
-  <p data-edit="g-1">Para calificar necesitamos la respuesta exacta del paso un trillón. Y nosotros tampoco llegamos hasta ahí contando paso por paso. ¿De dónde la sacamos?</p>
-  <p data-edit="g-2">De que armamos el juego al revés. No escribimos un juego para después buscarle la regla de resultado. <b>Empezamos por la regla de resultado</b>, y el juego se escribe a partir de ella.</p>
-  <p data-edit="g-3">Es lo que hace quien arma un crucigrama: primero elige las palabras y después escribe las pistas. Por eso conoce las respuestas.</p>
-  <figure class="orders" role="group" aria-label="El orden en que la IA recibe las piezas y el orden en que nosotros las armamos">
-    <div class="order"><span class="who">La IA, al jugar</span>
-      <span class="chip">regla de generación</span><span class="arrow" aria-hidden="true">→</span>
-      <span class="chip">pregunta lejana</span><span class="arrow" aria-hidden="true">→</span>
-      <span class="chip ghost">¿regla de resultado?</span></div>
-    <div class="order"><span class="who">Nosotros, al armar</span>
-      <span class="chip first">regla de resultado</span><span class="arrow" aria-hidden="true">→</span>
-      <span class="chip">regla de generación</span><span class="arrow" aria-hidden="true">→</span>
-      <span class="chip">pregunta lejana</span><span class="arrow" aria-hidden="true">→</span>
-      <span class="chip">verificación</span></div>
-    <figcaption data-edit="g-capo">Son las mismas piezas en otro orden. La IA tiene que llegar a donde nosotros empezamos.</figcaption>
-  </figure>
-
-  <h3 data-edit="g-h2">Los cuatro pasos, con el juego 1</h3>
-  <ol class="steps">
-    <li><span class="t" data-edit="g-s1h">Elegimos una regla de resultado</span>
-      <span class="what" data-edit="g-s1">Tiene que ser algo ya demostrado: probado con un razonamiento, no solo visto en ejemplos.</span>
-      <span class="here" data-edit="g-s1x"><b>En el juego 1:</b> lo que da vueltas en una ronda de 7 lugares vuelve al mismo lugar cada 7 pasos.</span></li>
-    <li><span class="t" data-edit="g-s2h">Escribimos la regla de generación que la produce</span>
-      <span class="what" data-edit="g-s2">Una línea que diga solo cómo se pasa de un paso al siguiente. Es lo que va a ver la IA.</span>
-      <span class="here" data-edit="g-s2x"><b>En el juego 1:</b> cada casilla copia a su vecina de la izquierda. Eso hace que la luz dé vueltas.</span></li>
-    <li><span class="t" data-edit="g-s3h">Elegimos el comienzo y la pregunta lejana</span>
-      <span class="what" data-edit="g-s3">La pregunta tiene que quedar tan lejos que contando paso por paso no se llegue.</span>
-      <span class="here" data-edit="g-s3x"><b>En el juego 1:</b> una sola casilla prendida, y el paso un trillón.</span></li>
-    <li><span class="t" data-edit="g-s4h">Verificamos con cuentas, sin ninguna IA</span>
-      <span class="what" data-edit="g-s4">Hacemos la cuenta paso por paso hasta donde se llega. En cada paso la comparamos con lo que dice la regla de resultado, casilla por casilla. Si difieren una sola vez, el juego se tira.</span>
-      <span class="here" data-edit="g-s4x"><b>En el juego 1:</b> los pasos 0 a 3.000, sin ninguna diferencia.</span></li>
-  </ol>
-  <figure>
-    <div class="ctrl">
-      <button type="button" id="v1-ok">Verificar el juego 1</button>
-      <button type="button" class="quiet" id="v1-bad">Probar una regla equivocada</button>
-    </div>
-    <div class="out" id="v1-out" aria-live="polite"></div>
-    <div class="rows" id="v1-rows"></div>
-    <figcaption data-edit="g-cap">Con el primer botón, la página hace esa comparación ahora mismo. El segundo usa a propósito una regla de resultado equivocada, para ver cómo se nota el error.</figcaption>
-  </figure>
-
-  <h3 data-edit="g-h3">¿Y cómo sabemos que vale en el paso un trillón?</h3>
-  <p data-edit="g-4">Comparamos hasta el paso 3.000, y la pregunta es por el paso un trillón. La comparación sola no asegura que la regla siga valiendo tan lejos.</p>
-  <p data-edit="g-5">Lo asegura un razonamiento. En el juego 1 es corto: en una ronda de 7, correrse 7 lugares es volver a donde uno estaba. Eso es cierto en el paso 7 y en el paso un trillón.</p>
-  <p data-edit="g-6">La comparación sirve para otra cosa: para pescar errores nuestros al escribir el programa. Son dos seguros distintos. El razonamiento dice que la regla es cierta. La comparación dice que la escribimos bien.</p>
-
-  <h3 data-edit="g-h4">De dónde salen las reglas de resultado</h3>
-  <p data-edit="g-7">No las inventamos. Las tomamos de matemática que ya está demostrada. El juego 1 usa la más simple que hay: lo que da vueltas, vuelve. El juego 2 usa otra, que está más abajo.</p>
-  <ul>
-    <li data-edit="g-8">Eso tiene un costo. Si la regla ya está en los libros, una IA puede saberla de memoria. De eso se ocupan los juegos que siguen, que la disfrazan.</li>
-    <li data-edit="g-9">Hay dos tipos de juego que no se arman así: los que no tienen ninguna regla de resultado, y las trampas. Los vemos cuando lleguen.</li>
-    <li data-edit="g-10">La IA no tiene que encontrar la misma regla de resultado que elegimos nosotros. Si encuentra otra que da las respuestas correctas, saca el mismo puntaje: solo calificamos las respuestas.</li>
-  </ul>
-</section>
-
 <section>
   <div class="sechead"><h2 data-edit="c-h">Cómo se califica</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
   <p data-edit="c-1">La IA no contesta solo sí o no. Dice cuán segura está de que la casilla está prendida. Eso permite tratar distinto al que sabe, al que duda y al que inventa.</p>
   <figure>
     <div class="ctrl">
-      <label for="score-p">En el juego 1, la casilla 1 está prendida. La IA dice estar segura en un:</label>
+      <label for="score-p">Supongamos que la casilla está prendida. La IA dice estar segura en un:</label>
       <input type="range" id="score-p" min="0" max="100" step="1" value="100">
     </div>
     <div class="out" id="score-out" aria-live="polite"></div>
@@ -247,8 +295,10 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
 
 <section>
   <div class="sechead"><h2 data-edit="d-h">Juego 2: las vecinas distintas</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
-  <p data-edit="d-1">Ahora hay 101 casillas en ronda, y varias prendidas al empezar.</p>
-  <p data-edit="d-2">La <b>regla de generación</b> también es una línea: una casilla queda prendida si sus dos vecinas eran distintas entre sí. Si eran iguales, queda apagada.</p>
+  <p data-edit="d-1">Este sale del segundo lugar: una regla que los matemáticos ya estudiaron. Vamos por los mismos pasos de la receta.</p>
+
+  <h3 data-edit="d-h1">La regla</h3>
+  <p data-edit="d-2">Hay 101 casillas en ronda, 8 prendidas al empezar. La regla de generación: <b>una casilla queda prendida si sus dos vecinas eran distintas entre sí.</b> Si eran iguales, queda apagada.</p>
   <div class="cases" aria-label="Tres ejemplos de la regla">
     <span class="case"><span class="sq on"></span><span class="sq">?</span><span class="sq"></span> → <span class="sq on"></span> distintas: prendida</span>
     <span class="case"><span class="sq on"></span><span class="sq">?</span><span class="sq on"></span> → <span class="sq"></span> iguales: apagada</span>
@@ -264,11 +314,11 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     </div>
     <figcaption data-edit="d-cap">Cada fila es un paso. Arriba está el paso 0.</figcaption>
   </figure>
-  <p data-edit="d-3">A diferencia del juego 1, acá esperar a que el dibujo se repita no sirve. Lo dejamos correr 200.000 pasos y la fila no se repitió. Se repite, pero recién a los 375 billones de pasos.</p>
+  <p data-edit="d-3">Acá el truco del juego 1 no sirve. El dibujo no se repite a la vista. Se repite, pero recién a los 375 billones de pasos: haciendo mil millones de pasos por segundo serían más de 4 días.</p>
 
-  <h3 data-edit="d-h2">La regla de resultado, escondida a simple vista</h3>
-  <p data-edit="d-4">Sin embargo hay un orden. Después de 2 pasos, cada casilla depende solo de las dos casillas que están a distancia 2. Después de 4 pasos, de las que están a distancia 4. Después de 8, a distancia 8. Y así con 16, 32, 64...</p>
-  <p data-edit="d-5">O sea: dar 8 pasos de a uno da lo mismo que aplicar la regla una sola vez, mirando 8 casillas más lejos. Comprobalo:</p>
+  <h3 data-edit="d-h2">El patrón, que está en los libros</h3>
+  <p data-edit="d-4">Para esta regla los matemáticos demostraron algo. Dar 2 pasos da lo mismo que aplicar la regla una sola vez, pero mirando a las casillas que están 2 lugares más lejos en vez de a las vecinas. Con 4 pasos, lo mismo mirando a 4 lugares. Con 8, a 8. Y así duplicando.</p>
+  <p data-edit="d-5">No hace falta creerlo. Comprobalo:</p>
   <figure>
     <div class="ctrl" role="group" aria-label="Cantidad de pasos a comparar">
       <span>Comparar con</span>
@@ -285,6 +335,20 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     <div class="verdict" id="g2-verdict" aria-live="polite"></div>
   </figure>
   <p data-edit="d-6">Con 3 no funciona: solo vale para 1, 2, 4, 8, 16 y los que siguen duplicando. Pero alcanza, porque cualquier número se arma sumando de esos. Para llegar al paso un trillón hacen falta 24 saltos, en vez de un trillón de pasos.</p>
+
+  <h3 data-edit="d-h4">Por qué vale siempre</h3>
+  <p data-edit="d-9">Este es el razonamiento, y se puede tocar. Arriba hay cinco casillas seguidas del paso 0. Abajo de todo está la casilla del medio, dos pasos después.</p>
+  <figure>
+    <div class="rows pyr" id="pyr"></div>
+    <div class="out" id="pyr-out" aria-live="polite"></div>
+    <div class="out" id="pyr-all"></div>
+    <figcaption data-edit="d-capp">Tocá las casillas de arriba para prenderlas o apagarlas, y mirá cuáles cambian la de abajo.</figcaption>
+  </figure>
+  <p data-edit="d-10">Solo las dos de las puntas cambian la casilla de abajo. Las otras tres no la cambian nunca. Y las puntas están justo a 2 lugares del medio.</p>
+  <p data-edit="d-11">La del medio no cuenta porque, al cambiarla, cambian a la vez las dos casillas del paso 1 que la miran. Si las dos cambian juntas, siguen siendo iguales o distintas entre sí, igual que antes.</p>
+  <p data-edit="d-12">Eso muestra que 2 pasos equivalen a aplicar la regla una vez a 2 lugares de distancia. Y repitiendo el mismo razonamiento se pasa de 2 a 4, de 4 a 8, y así sin límite.</p>
+
+  <h3 data-edit="d-h3">La respuesta y la verificación</h3>
   <figure>
     <div class="ctrl">
       <label for="g2-far">Saltar al paso:</label>
@@ -293,43 +357,16 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
     </div>
     <div class="out" id="g2-out" aria-live="polite"></div>
     <div class="strip"><span>Así queda la fila en ese paso:</span><canvas id="g2-far-row" width="606" height="18" role="img" aria-label="La fila en el paso pedido"></canvas></div>
-    <figcaption data-edit="d-cap2">Contando de a un paso, a mil millones de pasos por segundo, llegar al paso un trillón llevaría unos 31 años.</figcaption>
   </figure>
-  <p data-edit="d-7">Eso es lo que una IA tendría que descubrir en este juego. Nadie se lo dice: tiene la regla de una línea, una computadora chica para probar, y la pregunta.</p>
-
-  <h3 data-edit="d-h3">Cómo armamos este juego</h3>
-  <p data-edit="d-8">Con los mismos cuatro pasos del juego 1.</p>
-  <ol class="steps">
-    <li><span class="t" data-edit="d-s1h">La regla de resultado</span>
-      <span class="what" data-edit="d-s1">Un hecho ya demostrado sobre esta regla: dar 2, 4, 8, 16... pasos da lo mismo que aplicarla una sola vez a esa distancia.</span></li>
-    <li><span class="t" data-edit="d-s2h">La regla de generación</span>
-      <span class="what" data-edit="d-s2">Una casilla queda prendida si sus dos vecinas eran distintas entre sí.</span></li>
-    <li><span class="t" data-edit="d-s3h">El comienzo y la pregunta lejana</span>
-      <span class="what" data-edit="d-s3">101 casillas, 8 prendidas, y el paso un trillón. Con ese tamaño la fila tarda unos 375 billones de pasos en volver a repetirse. Contando a mil millones de pasos por segundo serían más de 4 días. A la IA le vamos a dar mucho menos tiempo que eso, así que el truco del juego 1 no le alcanza.</span></li>
-    <li><span class="t" data-edit="d-s4h">La verificación</span>
-      <span class="what" data-edit="d-s4">Los pasos 0 a 3.000 contra la regla de resultado, sin ninguna diferencia.</span></li>
-  </ol>
   <figure>
     <div class="ctrl"><button type="button" id="v2-ok">Verificar el juego 2</button></div>
     <div class="out" id="v2-out" aria-live="polite"></div>
     <div id="v2-strips" hidden>
       <div class="strip"><span id="v2-a-lbl"></span><canvas id="v2-a" width="606" height="18" role="img" aria-label="La fila calculada contando paso por paso"></canvas></div>
-      <div class="strip"><span id="v2-b-lbl"></span><canvas id="v2-b" width="606" height="18" role="img" aria-label="La misma fila calculada con la regla de resultado"></canvas></div>
+      <div class="strip"><span id="v2-b-lbl"></span><canvas id="v2-b" width="606" height="18" role="img" aria-label="La misma fila calculada con el patrón"></canvas></div>
     </div>
   </figure>
-
-  <h3 data-edit="d-h4">Por qué esa regla vale siempre</h3>
-  <p data-edit="d-9">Igual que en el juego 1, la comparación llega hasta el paso 3.000. Que la regla valga también en el paso un trillón lo asegura un razonamiento. Este se puede tocar.</p>
-  <figure>
-    <div class="rows pyr" id="pyr"></div>
-    <div class="out" id="pyr-out" aria-live="polite"></div>
-    <div class="out" id="pyr-all"></div>
-    <figcaption data-edit="d-capp">Arriba hay cinco casillas seguidas del paso 0. Tocalas para prenderlas o apagarlas. La de abajo es la casilla del medio, dos pasos después.</figcaption>
-  </figure>
-  <p data-edit="d-10">Las dos de las puntas cambian la casilla de abajo. Las otras tres no la cambian nunca.</p>
-  <p data-edit="d-11">La del medio no cuenta porque, al cambiarla, cambian a la vez las dos casillas del paso 1 que la miran. Y si las dos cambian juntas, siguen siendo iguales o distintas entre sí, igual que antes.</p>
-  <p data-edit="d-13">Las dos que están pegadas al medio tampoco cuentan. Solo cambian la casilla central del paso 1, y la de abajo no la mira: cada casilla mira a sus dos vecinas, no a la que tiene justo arriba.</p>
-  <p data-edit="d-12">O sea: 2 pasos dan lo mismo que aplicar la regla una vez a distancia 2. Esa regla tiene la misma forma que la original, así que el mismo razonamiento la lleva de 2 a 4, de 4 a 8, y así sin límite. Por eso vale en el paso un trillón, aunque nadie haya llegado hasta ahí contando.</p>
+  <p data-edit="d-7">Eso es lo que una IA tendría que descubrir en este juego. Nadie se lo dice: tiene la regla de una línea, una computadora chica para probar, y la pregunta.</p>
   <details>
     <summary>Ver el texto exacto que recibe la IA</summary>
 <pre>Sistema: una fila de 101 casillas en anillo (la última es vecina de la primera).
@@ -350,20 +387,10 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
 </section>
 
 <section>
-  <div class="sechead"><h2 data-edit="e-h">Qué muestran los dos juntos</h2><button type="button" class="quiet ask" hidden>Preguntar o sugerir</button></div>
-  <ul>
-    <li data-edit="e-1">La forma es siempre la misma: regla a la vista, pregunta lejana, regla de resultado por encontrar.</li>
-    <li data-edit="e-2">Lo que cambia es cuán escondida está la regla de resultado. En el juego 1 salta a la vista. En el 2 hay que buscarla.</li>
-    <li data-edit="e-4">Los dos se armaron igual: empezando por la regla de resultado y verificando con cuentas.</li>
-    <li data-edit="e-3">Un aviso sobre el juego 2: su regla de resultado está en los libros, y una IA puede conocerla de memoria. Por eso los juegos que siguen la disfrazan. Y por eso habrá también juegos sin ninguna regla de resultado, para ver si la IA inventa una.</li>
-  </ul>
-</section>
-
-<section>
   <div class="sechead"><h2 data-edit="f-h">Cómo usar esta página</h2></div>
   <ul>
     <li data-edit="f-1">Tocá los botones tranquilo. «Volver a empezar» deja todo como estaba.</li>
-    <li data-edit="f-2">Para cambiar un texto: «Editar texto» arriba de todo, escribís, y «Guardar cambios». La página queda guardada con tu versión.</li>
+    <li data-edit="f-2">Para cambiar un texto: «Editar texto» arriba de todo, escribís, y «Guardar cambios».</li>
     <li data-edit="f-3">Para preguntar o sugerir algo: el botón «Preguntar o sugerir» de cada parte, o el modo de comentarios de Claude.</li>
   </ul>
 </section>
@@ -610,11 +637,11 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
       $("v1-out").innerHTML = "Comparamos <b>" + withDots(res.compared) + "</b> pasos (del 0 al " + withDots(V_UNTIL) +
         "), las 7 casillas de cada uno: <b>ninguna diferencia</b>. Abajo, el paso " + withDots(res.shown) + " calculado de las dos maneras.";
     } else {
-      $("v1-out").innerHTML = (wrong ? "Con la regla equivocada «todo se repite cada 8 pasos», la" : "La") +
+      $("v1-out").innerHTML = (wrong ? "Con el patrón equivocado «todo se repite cada 8 pasos», la" : "La") +
         " cuenta y la regla <b>difieren en el paso " + withDots(res.diffAt) + "</b>. Contando, la luz está en la casilla <b>" +
-        res.counted.indexOf(1) + "</b>. La regla dice casilla <b>" + res.ruled.indexOf(1) + "</b>. Un juego así se tira.";
+        res.counted.indexOf(1) + "</b>. El patrón dice casilla <b>" + res.ruled.indexOf(1) + "</b>. Un juego así se tira.";
     }
-    $("v1-rows").innerHTML = rowHtml("contando", res.counted, "") + rowHtml("la regla", res.ruled, res.diffAt < 0 ? "" : "diff");
+    $("v1-rows").innerHTML = rowHtml("contando", res.counted, "") + rowHtml("el patrón", res.ruled, res.diffAt < 0 ? "" : "diff");
   }
   $("v1-ok").addEventListener("click", function () { v1Run(false); });
   $("v1-bad").addEventListener("click", function () { v1Run(true); });
@@ -631,7 +658,7 @@ Preguntas. Para cada una, contestá con la probabilidad de que la casilla esté 
         "), las 101 casillas de cada uno: <b>ninguna diferencia</b>. Tardó " + took(ms) + "."
       : "La cuenta y la regla <b>difieren en el paso " + withDots(res.diffAt) + "</b>. Un juego así se tira.";
     $("v2-a-lbl").textContent = "El paso " + withDots(res.shown) + ", contando de a un paso:";
-    $("v2-b-lbl").textContent = "El paso " + withDots(res.shown) + ", con la regla de resultado:";
+    $("v2-b-lbl").textContent = "El paso " + withDots(res.shown) + ", de un salto con el patrón:";
     $("v2-strips").hidden = false;
     v2Draw();
   }

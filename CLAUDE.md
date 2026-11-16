@@ -33,5 +33,6 @@ y su vocabulario (vicios, saltos, perillas) **no** aplican acá.
 
 ## Con Lucas
 
-Respuestas cortas, una idea por vez, sin jerga, empezando por el problema. Lo denso va a documentos. Si
+Respuestas cortas, una idea por vez, sin jerga, empezando por el problema. Las explicaciones: completas,
+casi sin asumir nada, y armadas para que cada concepto nuevo parezca obvio por lo que venía antes. Lo denso va a documentos. Si
 algo se puede mostrar con una figura, mostrarlo. Él decide; Codex y GPT Astra son segundas opiniones.
