@@ -41,6 +41,7 @@ pruebas puntuales de WAGER.
 ## notes
 
 - [Traspaso del 15-nov-2026](notes/2026-11-15-handoff.md) — dónde estamos y qué espera a Lucas.
+- [Hallazgos del 15 y 16 de noviembre](notes/2026-11-16-findings-drawn-worlds-small-gap.md) — lo que aprendimos probando de verdad: si el patrón lo dibujamos en la regla, se lee de vuelta; elegir el patrón y tener un hueco grande se pelean; la forma de medir "programa contra realidad" funciona. Con apoyo, límites y preguntas abiertas.
 - [Juegos con un programa diseñado debajo](notes/2026-11-16-designed-programs-idea.md) — idea guardada tras la primera prueba: elegir nosotros el fenómeno, reglas a la vista, fenómenos que todavía no ocurrieron. Sin probar.
 
 ## legacy/readings

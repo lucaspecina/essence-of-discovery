@@ -34,6 +34,19 @@ decidía, o armaban el candidato correcto y lo descartaban).
 **Aviso:** el modelo de esas tandas saca 0,2% en ARC-AGI-3, donde el mejor de noviembre de 2026 saca 81%.
 Son observaciones de modelos viejos; no hay que repetirlas como hechos sobre "los agentes".
 
+## Lo aprendido acá (15 y 16 de noviembre de 2026)
+
+Con apoyo y límites en [la nota de hallazgos](../research/notes/2026-11-16-findings-drawn-worlds-small-gap.md).
+
+- **Si el patrón lo dibujamos nosotros dentro de la regla, se lee de vuelta.** El hueco entre las reglas
+  simples y el patrón queda chico, y el mejor modelo lo cruza en minutos.
+- **Elegir el patrón y tener un hueco grande se pelean.** El hueco grande aparece cuando el patrón sale
+  solo, como en las reglas de Wolfram; pero entonces no lo elegimos.
+- **Medir contra las recetas generales**, no solo contra el que corre todo: hay maneras de resumir un mundo
+  sin entender nada de él en particular.
+- **Antes de construir, decir qué va a dar y por qué.** Lo que se puede razonar no se deja para el
+  experimento.
+
 ## El error que no hay que repetir
 
 Tres reformulaciones entre agosto y noviembre de 2026, y ningún experimento. Un repo limpio no arregla
