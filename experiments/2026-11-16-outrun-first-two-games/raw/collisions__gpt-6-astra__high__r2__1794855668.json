@@ -1,0 +1,907 @@
+{
+ "game": "collisions",
+ "model": "gpt-6-astra",
+ "effort": "high",
+ "hint": false,
+ "tag": "r2",
+ "started": "2026-11-16 16:01:08",
+ "wall_seconds": 260.2,
+ "limits": {
+  "max_runs": 40,
+  "run_seconds": 120.0,
+  "max_turns": 90
+ },
+ "error": null,
+ "usage": {
+  "calls": 8,
+  "input": 65038,
+  "output": 8413,
+  "reasoning": 5642,
+  "cached": 54045
+ },
+ "cost_usd": 1.071,
+ "code_runs": 6,
+ "code_seconds": 26.9,
+ "code_timeouts": 0,
+ "file_writes": [
+  {
+   "name": "solution.py",
+   "bytes": 4645
+  }
+ ],
+ "final_text": "LISTO\nEl programa salta directamente entre encuentros y aplica la regla exacta durante las colisiones.\nLos rebotes entre paredes se calculan con una fórmula, sin recorrer cada paso. `solution.py` quedó guardado y probado.",
+ "solution": "from math import isqrt\n\n_RULE = {\n    '.ab': '.', 'ab.': 'b', 'b..': 'a',\n    '.ba': '.', 'ba.': 'a', 'a..': 'b',\n    '..c': 'c', '.d.': 'd', 'a.c': 'd',\n    'a.d': 'b', 'b.d': 'a', '.bd': 'c',\n    'bd.': 'e', '.ad': 'c', 'ad.': 'e',\n    'e..': 'd', 'd.c': 'c', '.dc': 'd',\n    'dc.': 'a', '.da': 'd',\n}\n_FLIP = {'a': 'b', 'b': 'a', 'c': 'c', 'd': 'd', 'e': 'e'}\n\n\ndef _step(cells):\n    candidates = set()\n    for p in cells:\n        candidates.update((p - 1, p, p + 1))\n    get = cells.get\n    out = {}\n    for p in candidates:\n        s = _RULE.get(get(p - 1, '.') + get(p, '.') + get(p + 1, '.'))\n        if s and s != '.':\n            out[p] = s\n    return out\n\n\ndef _cavity(left, right, steps):\n    # At the start of a lap: d at left, a at left+1, d at right.\n    # A lap increases the width by one and lasts 2*width-2 steps.\n    width = right - left\n    b = 2 * width - 3\n    laps = (isqrt(b * b + 4 * steps) - b) // 2\n    steps -= laps * (laps + b)\n    right += laps\n    width += laps\n    if steps <= width - 2:\n        return {left: 'd', left + 1 + steps: 'b' if steps & 1 else 'a', right: 'd'}\n    if steps == width - 1:\n        return {left: 'd', right - 1: 'c', right: 'e'}\n    return {left: 'd', left + 2 * width - 2 - steps: 'c', right + 1: 'd'}\n\n\ndef predict(start, steps):\n    cells = dict(start)\n    finished = {}\n    while steps and cells:\n        positions = sorted(cells)\n\n        # These particles move outwards at the maximal propagation speed.\n        # Nothing in the remaining world can ever reach them.\n        while positions and cells[positions[0]] == 'c' and (\n                len(positions) == 1 or positions[1] - positions[0] > 2):\n            p = positions.pop(0)\n            finished[p - steps] = cells.pop(p)\n        while positions:\n            p = positions[-1]\n            if cells[p] not in 'ab':\n                break\n            size = 1\n            if (len(positions) > 1 and p - positions[-2] == 1\n                    and cells[positions[-2]] in 'ab'\n                    and cells[positions[-2]] != cells[p]):\n                size = 2\n            if len(positions) > size and positions[-size] - positions[-size - 1] <= 2:\n                break\n            for _ in range(size):\n                p = positions.pop()\n                s = cells.pop(p)\n                finished[p + steps] = _FLIP[s] if steps & 1 else s\n        if not positions:\n            break\n        if len(positions) == 1:\n            p = positions[0]\n            s = cells[p]\n            if s == 'e':\n                cells = {p + 1: 'd'}\n            # a,b,c have already been removed above, so only d or e remains.\n            break\n        if (len(positions) == 3 and cells[positions[0]] == 'd'\n                and cells[positions[1]] == 'a' and cells[positions[2]] == 'd'\n                and positions[1] == positions[0] + 1\n                and positions[2] - positions[0] >= 3):\n            cells = _cavity(positions[0], positions[2], steps)\n            break\n\n        groups = []\n        group = []\n        for p in positions:\n            if group and p - group[-1] > 2:\n                groups.append(group)\n                group = []\n            group.append(p)\n        groups.append(group)\n        speeds = []\n        for group in groups:\n            if len(group) == 1:\n                s = cells[group[0]]\n                if s in 'ab':\n                    speeds.append(1)\n                elif s == 'c':\n                    speeds.append(-1)\n                elif s == 'd':\n                    speeds.append(0)\n                else:\n                    break\n            elif (len(group) == 2 and group[1] - group[0] == 1\n                  and cells[group[0]] + cells[group[1]] in ('ab', 'ba')):\n                speeds.append(1)\n            elif all(cells[p] == 'd' for p in group) and all(\n                    group[i + 1] - group[i] == 2 for i in range(len(group) - 1)):\n                speeds.append(0)\n            else:\n                break\n        if len(speeds) != len(groups):\n            cells = _step(cells)\n            steps -= 1\n            continue\n\n        jump = steps\n        for i in range(len(groups) - 1):\n            closing = speeds[i] - speeds[i + 1]\n            if closing > 0:\n                distance = groups[i + 1][0] - groups[i][-1]\n                jump = min(jump, (distance - 2 + closing - 1) // closing)\n        new = {}\n        for group, speed in zip(groups, speeds):\n            for p in group:\n                s = cells[p]\n                new[p + speed * jump] = _FLIP[s] if speed == 1 and jump & 1 else s\n        cells = new\n        steps -= jump\n    finished.update(cells)\n    return finished\n",
+ "evaluation": {
+  "size_bytes": 4645,
+  "size_ok": true,
+  "horizon": 9,
+  "horizon_normal": 9,
+  "ok": 72,
+  "of": 72,
+  "by_scale": [
+   {
+    "scale": 1,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   },
+   {
+    "scale": 2,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   },
+   {
+    "scale": 3,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 0.0
+   },
+   {
+    "scale": 4,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   },
+   {
+    "scale": 5,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 0.0
+   },
+   {
+    "scale": 6,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 2e-05
+   },
+   {
+    "scale": 7,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   },
+   {
+    "scale": 8,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   },
+   {
+    "scale": 9,
+    "of": 8,
+    "ok": 8,
+    "wrong": 0,
+    "slow": 0,
+    "error": 0,
+    "median_seconds": 1e-05
+   }
+  ],
+  "by_kind": {
+   "normal": {
+    "ok": 72,
+    "of": 72
+   }
+  },
+  "detail": [
+   {
+    "id": "e1-0",
+    "scale": 1,
+    "steps": 15,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e1-1",
+    "scale": 1,
+    "steps": 15,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e1-2",
+    "scale": 1,
+    "steps": 19,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e1-3",
+    "scale": 1,
+    "steps": 10,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e1-4",
+    "scale": 1,
+    "steps": 13,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e1-5",
+    "scale": 1,
+    "steps": 11,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e1-6",
+    "scale": 1,
+    "steps": 18,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e1-7",
+    "scale": 1,
+    "steps": 13,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e2-0",
+    "scale": 2,
+    "steps": 103,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e2-1",
+    "scale": 2,
+    "steps": 174,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e2-2",
+    "scale": 2,
+    "steps": 105,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 4e-05,
+    "error": null
+   },
+   {
+    "id": "e2-3",
+    "scale": 2,
+    "steps": 100,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e2-4",
+    "scale": 2,
+    "steps": 184,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e2-5",
+    "scale": 2,
+    "steps": 112,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e2-6",
+    "scale": 2,
+    "steps": 188,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e2-7",
+    "scale": 2,
+    "steps": 145,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e3-0",
+    "scale": 3,
+    "steps": 1007,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e3-1",
+    "scale": 3,
+    "steps": 1655,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e3-2",
+    "scale": 3,
+    "steps": 1148,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e3-3",
+    "scale": 3,
+    "steps": 1143,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e3-4",
+    "scale": 3,
+    "steps": 1019,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e3-5",
+    "scale": 3,
+    "steps": 1635,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e3-6",
+    "scale": 3,
+    "steps": 1579,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e3-7",
+    "scale": 3,
+    "steps": 1475,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e4-0",
+    "scale": 4,
+    "steps": 15067,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e4-1",
+    "scale": 4,
+    "steps": 17825,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e4-2",
+    "scale": 4,
+    "steps": 14990,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 3e-05,
+    "error": null
+   },
+   {
+    "id": "e4-3",
+    "scale": 4,
+    "steps": 13087,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e4-4",
+    "scale": 4,
+    "steps": 10732,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e4-5",
+    "scale": 4,
+    "steps": 16844,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e4-6",
+    "scale": 4,
+    "steps": 17967,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e4-7",
+    "scale": 4,
+    "steps": 18661,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e5-0",
+    "scale": 5,
+    "steps": 148170,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e5-1",
+    "scale": 5,
+    "steps": 186774,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e5-2",
+    "scale": 5,
+    "steps": 120223,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e5-3",
+    "scale": 5,
+    "steps": 107240,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e5-4",
+    "scale": 5,
+    "steps": 159448,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 3e-05,
+    "error": null
+   },
+   {
+    "id": "e5-5",
+    "scale": 5,
+    "steps": 149413,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e5-6",
+    "scale": 5,
+    "steps": 190413,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e5-7",
+    "scale": 5,
+    "steps": 145822,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e6-0",
+    "scale": 6,
+    "steps": 1692407,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e6-1",
+    "scale": 6,
+    "steps": 1727225,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e6-2",
+    "scale": 6,
+    "steps": 1583286,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e6-3",
+    "scale": 6,
+    "steps": 1439970,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 3e-05,
+    "error": null
+   },
+   {
+    "id": "e6-4",
+    "scale": 6,
+    "steps": 1745482,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e6-5",
+    "scale": 6,
+    "steps": 1854816,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e6-6",
+    "scale": 6,
+    "steps": 1458505,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e6-7",
+    "scale": 6,
+    "steps": 1673219,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 2e-05,
+    "error": null
+   },
+   {
+    "id": "e7-0",
+    "scale": 7,
+    "steps": 12224180,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e7-1",
+    "scale": 7,
+    "steps": 11731979,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e7-2",
+    "scale": 7,
+    "steps": 14241056,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e7-3",
+    "scale": 7,
+    "steps": 14794970,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e7-4",
+    "scale": 7,
+    "steps": 12813204,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e7-5",
+    "scale": 7,
+    "steps": 14566871,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e7-6",
+    "scale": 7,
+    "steps": 13746651,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e7-7",
+    "scale": 7,
+    "steps": 15290644,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e8-0",
+    "scale": 8,
+    "steps": 187884521,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 4e-05,
+    "error": null
+   },
+   {
+    "id": "e8-1",
+    "scale": 8,
+    "steps": 170872371,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e8-2",
+    "scale": 8,
+    "steps": 143816849,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e8-3",
+    "scale": 8,
+    "steps": 105474851,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 3e-05,
+    "error": null
+   },
+   {
+    "id": "e8-4",
+    "scale": 8,
+    "steps": 170998579,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e8-5",
+    "scale": 8,
+    "steps": 162744105,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e8-6",
+    "scale": 8,
+    "steps": 138409189,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e8-7",
+    "scale": 8,
+    "steps": 137430394,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e9-0",
+    "scale": 9,
+    "steps": 1254639589,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e9-1",
+    "scale": 9,
+    "steps": 1943685562,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   },
+   {
+    "id": "e9-2",
+    "scale": 9,
+    "steps": 1982191962,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e9-3",
+    "scale": 9,
+    "steps": 1733764338,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e9-4",
+    "scale": 9,
+    "steps": 1590691573,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e9-5",
+    "scale": 9,
+    "steps": 1974983725,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 6e-05,
+    "error": null
+   },
+   {
+    "id": "e9-6",
+    "scale": 9,
+    "steps": 1472434364,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 1e-05,
+    "error": null
+   },
+   {
+    "id": "e9-7",
+    "scale": 9,
+    "steps": 1281689911,
+    "result": "bien",
+    "kind": "normal",
+    "seconds": 0.0,
+    "error": null
+   }
+  ],
+  "driver_output": "fin\n",
+  "driver_timed_out": false
+ },
+ "brief": "Tu trabajo es escribir un programa que prediga cómo queda un mundo sin recorrer todos los pasos.\n\nEL MUNDO\n- Una fila de casillas sin fin hacia los dos lados, numeradas con enteros (..., -2, -1, 0, 1, 2, ...).\n- Cada casilla tiene un símbolo: \".\" (vacía), \"a\", \"b\", \"c\", \"d\" o \"e\".\n- En cada paso todas las casillas cambian a la vez. El símbolo nuevo de una casilla depende de tres símbolos\n  del paso anterior: el de su izquierda, el suyo y el de su derecha.\n- La regla completa son estos 20 renglones, escritos (izquierda propia derecha) -> nuevo.\n  Todo trío que no está en la lista da \".\" (vacía):\n  (. a b) -> .\n  (a b .) -> b\n  (b . .) -> a\n  (. b a) -> .\n  (b a .) -> a\n  (a . .) -> b\n  (. . c) -> c\n  (. d .) -> d\n  (a . c) -> d\n  (a . d) -> b\n  (b . d) -> a\n  (. b d) -> c\n  (b d .) -> e\n  (. a d) -> c\n  (a d .) -> e\n  (e . .) -> d\n  (d . c) -> c\n  (. d c) -> d\n  (d c .) -> a\n  (. d a) -> d\n- Una fila se escribe como un diccionario de Python {posición: símbolo} con las casillas NO vacías.\n\nLOS COMIENZOS DE ESTE JUEGO\nEntre dos y cuatro fichas en fila, en cualquier orden: pares \"a b\" (uno o dos) y letras \"c\" (una o dos). Entre una ficha y la siguiente hay entre 2 y 1.000.000 de casillas vacías; la cantidad se sortea de modo que haya tanto separaciones chicas como grandes.\n\nLO QUE TENÉS QUE ENTREGAR\nUn archivo `solution.py` en tu directorio de trabajo, con una función:\n\n    def predict(start, steps):\n        # start: diccionario {posición: símbolo} con las casillas no vacías del paso 0\n        # steps: entero >= 0\n        # devuelve: diccionario {posición: símbolo} con las casillas no vacías después de `steps` pasos\n\nCÓMO SE VA A PROBAR\n- `solution.py` se prueba solo, en una carpeta vacía: no puede importar `world.py` ni leer archivos. Puede\n  usar la biblioteca estándar de Python y numpy.\n- Se lo llama con comienzos nuevos (sorteados igual que los de este juego, pero otros) y con cantidades de\n  pasos de todos los tamaños: desde 10 hasta 2,000,000,000. Hay 8 casos de cada tamaño\n  (decenas, cientos, miles, y así hasta el más grande).\n- Un caso está bien si el resultado es EXACTAMENTE el que da la regla corrida paso por paso (eso lo corremos\n  nosotros) y la llamada tarda menos de 1 segundo.\n- El archivo no puede pesar más de 20,000 bytes.\n\nEL PUNTAJE\n- Por cada tamaño, cuántos casos están bien. El número principal: hasta qué tamaño están todos bien.\n- Hay crédito parcial. Un programa que aplica la regla paso por paso acierta en los tamaños chicos y se queda\n  sin tiempo en los grandes. Para llegar lejos hace falta saber qué va a pasar sin hacer todos los pasos.\n- Se miden tres cosas: si coincide con la regla, cuánto pesa el archivo y cuánto tarda.\n\nTU COMPUTADORA\n- Herramienta `run_python`: ejecuta código Python 3 (con numpy) en tu directorio de trabajo y devuelve lo\n  que imprime. Tenés 40 ejecuciones, de hasta 120 segundos cada una, en un solo núcleo,\n  sin internet. Lo que guardes en el directorio queda para las ejecuciones siguientes.\n- Herramienta `write_file`: escribe un archivo en tu directorio de trabajo (no gasta ejecuciones).\n- Ya hay dos archivos:\n  - `world.py`: la regla (`RULE`), `step(cells)`, `run(cells, steps)` que la corre paso por paso,\n    `show(cells)`, `parse(texto)` y `sample_start(seed)` que sortea un comienzo de este juego.\n  - `check.py`: `check.compare()` compara tu `solution.py` contra `world.run` en comienzos sorteados;\n    `check.timing()` mide cuánto tarda a cada tamaño.\n- Referencia de velocidad: en esta máquina `world.run` hace unos 500.000 pasos por segundo cuando hay tres\n  casillas ocupadas.\n\nUsá las ejecuciones que necesites para investigar el mundo y probar tu programa. Cuando termines, dejá el\n`solution.py` definitivo en el directorio y respondé con la palabra LISTO y dos o tres líneas contando cómo\nfunciona tu programa.\n",
+ "messages": [
+  {
+   "role": "user",
+   "content": "Tu trabajo es escribir un programa que prediga cómo queda un mundo sin recorrer todos los pasos.\n\nEL MUNDO\n- Una fila de casillas sin fin hacia los dos lados, numeradas con enteros (..., -2, -1, 0, 1, 2, ...).\n- Cada casilla tiene un símbolo: \".\" (vacía), \"a\", \"b\", \"c\", \"d\" o \"e\".\n- En cada paso todas las casillas cambian a la vez. El símbolo nuevo de una casilla depende de tres símbolos\n  del paso anterior: el de su izquierda, el suyo y el de su derecha.\n- La regla completa son estos 20 renglones, escritos (izquierda propia derecha) -> nuevo.\n  Todo trío que no está en la lista da \".\" (vacía):\n  (. a b) -> .\n  (a b .) -> b\n  (b . .) -> a\n  (. b a) -> .\n  (b a .) -> a\n  (a . .) -> b\n  (. . c) -> c\n  (. d .) -> d\n  (a . c) -> d\n  (a . d) -> b\n  (b . d) -> a\n  (. b d) -> c\n  (b d .) -> e\n  (. a d) -> c\n  (a d .) -> e\n  (e . .) -> d\n  (d . c) -> c\n  (. d c) -> d\n  (d c .) -> a\n  (. d a) -> d\n- Una fila se escribe como un diccionario de Python {posición: símbolo} con las casillas NO vacías.\n\nLOS COMIENZOS DE ESTE JUEGO\nEntre dos y cuatro fichas en fila, en cualquier orden: pares \"a b\" (uno o dos) y letras \"c\" (una o dos). Entre una ficha y la siguiente hay entre 2 y 1.000.000 de casillas vacías; la cantidad se sortea de modo que haya tanto separaciones chicas como grandes.\n\nLO QUE TENÉS QUE ENTREGAR\nUn archivo `solution.py` en tu directorio de trabajo, con una función:\n\n    def predict(start, steps):\n        # start: diccionario {posición: símbolo} con las casillas no vacías del paso 0\n        # steps: entero >= 0\n        # devuelve: diccionario {posición: símbolo} con las casillas no vacías después de `steps` pasos\n\nCÓMO SE VA A PROBAR\n- `solution.py` se prueba solo, en una carpeta vacía: no puede importar `world.py` ni leer archivos. Puede\n  usar la biblioteca estándar de Python y numpy.\n- Se lo llama con comienzos nuevos (sorteados igual que los de este juego, pero otros) y con cantidades de\n  pasos de todos los tamaños: desde 10 hasta 2,000,000,000. Hay 8 casos de cada tamaño\n  (decenas, cientos, miles, y así hasta el más grande).\n- Un caso está bien si el resultado es EXACTAMENTE el que da la regla corrida paso por paso (eso lo corremos\n  nosotros) y la llamada tarda menos de 1 segundo.\n- El archivo no puede pesar más de 20,000 bytes.\n\nEL PUNTAJE\n- Por cada tamaño, cuántos casos están bien. El número principal: hasta qué tamaño están todos bien.\n- Hay crédito parcial. Un programa que aplica la regla paso por paso acierta en los tamaños chicos y se queda\n  sin tiempo en los grandes. Para llegar lejos hace falta saber qué va a pasar sin hacer todos los pasos.\n- Se miden tres cosas: si coincide con la regla, cuánto pesa el archivo y cuánto tarda.\n\nTU COMPUTADORA\n- Herramienta `run_python`: ejecuta código Python 3 (con numpy) en tu directorio de trabajo y devuelve lo\n  que imprime. Tenés 40 ejecuciones, de hasta 120 segundos cada una, en un solo núcleo,\n  sin internet. Lo que guardes en el directorio queda para las ejecuciones siguientes.\n- Herramienta `write_file`: escribe un archivo en tu directorio de trabajo (no gasta ejecuciones).\n- Ya hay dos archivos:\n  - `world.py`: la regla (`RULE`), `step(cells)`, `run(cells, steps)` que la corre paso por paso,\n    `show(cells)`, `parse(texto)` y `sample_start(seed)` que sortea un comienzo de este juego.\n  - `check.py`: `check.compare()` compara tu `solution.py` contra `world.run` en comienzos sorteados;\n    `check.timing()` mide cuánto tarda a cada tamaño.\n- Referencia de velocidad: en esta máquina `world.run` hace unos 500.000 pasos por segundo cuando hay tres\n  casillas ocupadas.\n\nUsá las ejecuciones que necesites para investigar el mundo y probar tu programa. Cuando termines, dejá el\n`solution.py` definitivo en el directorio y respondé con la palabra LISTO y dos o tres líneas contando cómo\nfunciona tu programa.\n"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_peXRWJcbVijxeyMk12qotQmX",
+     "name": "run_python",
+     "arguments": "{\"code\":\"print(open('world.py').read()); print(open('check.py').read())\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_peXRWJcbVijxeyMk12qotQmX",
+   "content": "\"\"\"El mundo de los dos primeros juegos de `outrun`: la regla y cómo se corre paso por paso.\n\nUna fila de casillas sin fin, hacia los dos lados. Cada casilla tiene un símbolo: \".\" (vacía), \"a\", \"b\",\n\"c\", \"d\" o \"e\". En cada paso todas cambian a la vez; el símbolo nuevo de una casilla depende de tres\nsímbolos del paso anterior: el de su izquierda, el suyo y el de su derecha. La regla es la lista `RULE`;\ntodo trío que no figura da \".\" (vacía).\n\nCómo se armó la regla: dibujando lo que queríamos que pasara (cosas que viajan, una pared que rebota y se\ncorre) y anotando cada trío que aparecía en el dibujo. Lo que hace de verdad puede tener más cosas que las\nque dibujamos: la verdad de los juegos es siempre lo que da esta regla al correrla.\n\nUna fila se guarda como un diccionario {posición: símbolo} con las casillas no vacías.\n\"\"\"\nfrom __future__ import annotations\n\nSYMBOLS = \".abcde\"\n\nRULE = {\n    # un par \"a b\" y una letra sola (a o b) viajan a la derecha, un lugar por paso, cambiando de letra\n    (\".\", \"a\", \"b\"): \".\", (\"a\", \"b\", \".\"): \"b\", (\"b\", \".\", \".\"): \"a\",\n    (\".\", \"b\", \"a\"): \".\", (\"b\", \"a\", \".\"): \"a\", (\"a\", \".\", \".\"): \"b\",\n    # la c viaja a la izquierda; la d se queda quieta\n    (\".\", \".\", \"c\"): \"c\", (\".\", \"d\", \".\"): \"d\",\n    # un par que se encuentra con una c\n    (\"a\", \".\", \"c\"): \"d\",\n    # algo que viene de la izquierda y toca una d\n    (\"a\", \".\", \"d\"): \"b\", (\"b\", \".\", \"d\"): \"a\",\n    (\".\", \"b\", \"d\"): \"c\", (\"b\", \"d\", \".\"): \"e\",\n    (\".\", \"a\", \"d\"): \"c\", (\"a\", \"d\", \".\"): \"e\",\n    (\"e\", \".\", \".\"): \"d\",\n    # una c que viene de la derecha y toca una d\n    (\"d\", \".\", \"c\"): \"c\", (\".\", \"d\", \"c\"): \"d\", (\"d\", \"c\", \".\"): \"a\", (\".\", \"d\", \"a\"): \"d\",\n}\n\n\ndef step(cells: dict) -> dict:\n    \"\"\"Un paso. `cells` es {posición: símbolo} con las casillas no vacías.\"\"\"\n    candidates = set()\n    for p in cells:\n        candidates.update((p - 1, p, p + 1))\n    new = {}\n    for p in candidates:\n        symbol = RULE.get((cells.get(p - 1, \".\"), cells.get(p, \".\"), cells.get(p + 1, \".\")), \".\")\n        if symbol != \".\":\n            new[p] = symbol\n    return new\n\n\ndef run(cells: dict, steps: int) -> dict:\n    \"\"\"Corre la regla `steps` pasos, uno por uno. Es la realidad contra la que se compara todo.\"\"\"\n    cells = dict(cells)\n    for _ in range(steps):\n        cells = step(cells)\n    return cells\n\n\ndef show(cells: dict, lo: int | None = None, hi: int | None = None) -> str:\n    \"\"\"La fila como texto, entre las posiciones `lo` y `hi` (por defecto, de la primera a la última no vacía).\"\"\"\n    if not cells:\n        return \"(vacía)\"\n    lo = min(cells) if lo is None else lo\n    hi = max(cells) if hi is None else hi\n    return \" \".join(cells.get(p, \".\") for p in range(lo, hi + 1))\n\n\ndef parse(text: str, origin: int = 0) -> dict:\n    \"\"\"Lo inverso de `show`: \"d . a . d\" con la primera casilla en `origin`.\"\"\"\n    return {origin + i: ch for i, ch in enumerate(text.split()) if ch != \".\"}\n\n\ndef clusters(cells: dict) -> list:\n    \"\"\"Parte la fila en grupos de casillas que se pueden influir (separadas por menos de dos vacías).\"\"\"\n    groups, current = [], []\n    for p in sorted(cells):\n        if current and p - current[-1] > 2:\n            groups.append(current)\n            current = []\n        current.append(p)\n    if current:\n        groups.append(current)\n    return [{p: cells[p] for p in group} for group in groups]\n\n\nimport math\nimport random\n\n\ndef _sample(rng) -> dict:\n    \"\"\"Entre dos y cuatro fichas en fila, en cualquier orden: pares \"a b\" (uno o dos) y letras \"c\" (una o\n    dos). Entre una ficha y la siguiente hay entre 2 y 1.000.000 de casillas vacías; la cantidad se sortea\n    de modo que haya tanto separaciones chicas como grandes.\"\"\"\n    kinds = [\"ab\"] * rng.randint(1, 2) + [\"c\"] * rng.randint(1, 2)\n    rng.shuffle(kinds)\n    cells, x = {}, rng.randint(-1000, 1000)\n    for kind in kinds:\n        for i, ch in enumerate(kind):\n            cells[x + i] = ch\n        x += len(kind) + int(round(10 ** rng.uniform(math.log10(2), 6)))\n    return cells\n\n\ndef sample_start(seed: int) -> dict:\n    \"\"\"Un comienzo de este juego, sorteado con esa semilla. La prueba usa otros comienzos de la misma familia.\"\"\"\n    return _sample(random.Random(seed))\n\n\"\"\"Para probar tu solution.py: lo compara contra la regla corrida paso por paso y mide tiempos.\n\n    import check\n    check.compare()      # 200 comienzos sorteados, pasos chicos: ¿da lo mismo que world.run?\n    check.timing()       # cuánto tarda predict a cada distancia (no comprueba el resultado)\n\"\"\"\nimport importlib\nimport random\nimport time\n\nimport world\n\nMAX_SCALE = 9     # el tamaño más grande que se prueba es 2 * 10 ** MAX_SCALE pasos\n\n\ndef compare(cases=200, max_steps=3000, seed=0):\n    import solution\n    importlib.reload(solution)\n    rng, wrong = random.Random(seed), 0\n    for i in range(cases):\n        start = world.sample_start(rng.randrange(10 ** 9))\n        steps = rng.randint(0, max_steps)\n        truth = world.run(start, steps)\n        got = {int(p): s for p, s in dict(solution.predict(dict(start), steps)).items() if s != \".\"}\n        if got != truth:\n            wrong += 1\n            if wrong <= 3:\n                print(f\"DISTINTO  comienzo={start}  pasos={steps}\\n   regla:    {truth}\\n   solution: {got}\")\n    print(f\"{cases - wrong} de {cases} iguales a la regla (pasos hasta {max_steps})\")\n\n\ndef timing(seed=0, limit=1.0):\n    import solution\n    importlib.reload(solution)\n    rng = random.Random(seed)\n    for k in range(1, MAX_SCALE + 1):\n        start = world.sample_start(rng.randrange(10 ** 9))\n        steps = rng.randint(10 ** k, 2 * 10 ** k)\n        t0 = time.perf_counter()\n        solution.predict(dict(start), steps)\n        dt = time.perf_counter() - t0\n        print(f\"pasos {steps:>13,}: {dt:8.4f} s {'  <-- pasa el tope' if dt > limit else ''}\")\n        if dt > 20:\n            print(\"(corto acá: tarda demasiado)\")\n            break\n\n\n[ejecución 1 de 40; tardó 0.0 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_7TOM5vNuKmI9gmxrUgSLPjBl",
+     "name": "run_python",
+     "arguments": "{\"code\":\"import world\\nfor s in ['a b . . c','a b . . . c','a b . . . . c','a . . c','b . . c','a . c','b . c','a . d','b . d','a b . d','b a . d','d . c','d c','d . . c','d . a','d . a . d']:\\n print('\\\\n',s)\\n x=world.parse(s)\\n for i in range(9):\\n  print(i, sorted(x.items()))\\n  x=world.step(x)\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_7TOM5vNuKmI9gmxrUgSLPjBl",
+   "content": "\n a b . . c\n0 [(0, 'a'), (1, 'b'), (4, 'c')]\n1 [(1, 'b'), (2, 'a'), (3, 'c')]\n2 []\n3 []\n4 []\n5 []\n6 []\n7 []\n8 []\n\n a b . . . c\n0 [(0, 'a'), (1, 'b'), (5, 'c')]\n1 [(1, 'b'), (2, 'a'), (4, 'c')]\n2 [(2, 'a'), (3, 'd')]\n3 [(2, 'c'), (3, 'e')]\n4 [(1, 'c'), (4, 'd')]\n5 [(0, 'c'), (4, 'd')]\n6 [(-1, 'c'), (4, 'd')]\n7 [(-2, 'c'), (4, 'd')]\n8 [(-3, 'c'), (4, 'd')]\n\n a b . . . . c\n0 [(0, 'a'), (1, 'b'), (6, 'c')]\n1 [(1, 'b'), (2, 'a'), (5, 'c')]\n2 [(2, 'a'), (3, 'b'), (4, 'c')]\n3 []\n4 []\n5 []\n6 []\n7 []\n8 []\n\n a . . c\n0 [(0, 'a'), (3, 'c')]\n1 [(1, 'b'), (2, 'c')]\n2 []\n3 []\n4 []\n5 []\n6 []\n7 []\n8 []\n\n b . . c\n0 [(0, 'b'), (3, 'c')]\n1 [(1, 'a'), (2, 'c')]\n2 []\n3 []\n4 []\n5 []\n6 []\n7 []\n8 []\n\n a . c\n0 [(0, 'a'), (2, 'c')]\n1 [(1, 'd')]\n2 [(1, 'd')]\n3 [(1, 'd')]\n4 [(1, 'd')]\n5 [(1, 'd')]\n6 [(1, 'd')]\n7 [(1, 'd')]\n8 [(1, 'd')]\n\n b . c\n0 [(0, 'b'), (2, 'c')]\n1 []\n2 []\n3 []\n4 []\n5 []\n6 []\n7 []\n8 []\n\n a . d\n0 [(0, 'a'), (2, 'd')]\n1 [(1, 'b'), (2, 'd')]\n2 [(1, 'c'), (2, 'e')]\n3 [(0, 'c'), (3, 'd')]\n4 [(-1, 'c'), (3, 'd')]\n5 [(-2, 'c'), (3, 'd')]\n6 [(-3, 'c'), (3, 'd')]\n7 [(-4, 'c'), (3, 'd')]\n8 [(-5, 'c'), (3, 'd')]\n\n b . d\n0 [(0, 'b'), (2, 'd')]\n1 [(1, 'a'), (2, 'd')]\n2 [(1, 'c'), (2, 'e')]\n3 [(0, 'c'), (3, 'd')]\n4 [(-1, 'c'), (3, 'd')]\n5 [(-2, 'c'), (3, 'd')]\n6 [(-3, 'c'), (3, 'd')]\n7 [(-4, 'c'), (3, 'd')]\n8 [(-5, 'c'), (3, 'd')]\n\n a b . d\n0 [(0, 'a'), (1, 'b'), (3, 'd')]\n1 [(1, 'b'), (2, 'a'), (3, 'd')]\n2 [(3, 'e')]\n3 [(4, 'd')]\n4 [(4, 'd')]\n5 [(4, 'd')]\n6 [(4, 'd')]\n7 [(4, 'd')]\n8 [(4, 'd')]\n\n b a . d\n0 [(0, 'b'), (1, 'a'), (3, 'd')]\n1 [(1, 'a'), (2, 'b'), (3, 'd')]\n2 [(3, 'e')]\n3 [(4, 'd')]\n4 [(4, 'd')]\n5 [(4, 'd')]\n6 [(4, 'd')]\n7 [(4, 'd')]\n8 [(4, 'd')]\n\n d . c\n0 [(0, 'd'), (2, 'c')]\n1 [(0, 'd'), (1, 'c')]\n2 [(0, 'd'), (1, 'a')]\n3 [(0, 'd'), (2, 'b')]\n4 [(0, 'd'), (3, 'a')]\n5 [(0, 'd'), (4, 'b')]\n6 [(0, 'd'), (5, 'a')]\n7 [(0, 'd'), (6, 'b')]\n8 [(0, 'd'), (7, 'a')]\n\n d c\n0 [(0, 'd'), (1, 'c')]\n1 [(0, 'd'), (1, 'a')]\n2 [(0, 'd'), (2, 'b')]\n3 [(0, 'd'), (3, 'a')]\n4 [(0, 'd'), (4, 'b')]\n5 [(0, 'd'), (5, 'a')]\n6 [(0, 'd'), (6, 'b')]\n7 [(0, 'd'), (7, 'a')]\n8 [(0, 'd'), (8, 'b')]\n\n d . . c\n0 [(0, 'd'), (3, 'c')]\n1 [(0, 'd'), (2, 'c')]\n2 [(0, 'd'), (1, 'c')]\n3 [(0, 'd'), (1, 'a')]\n4 [(0, 'd'), (2, 'b')]\n5 [(0, 'd'), (3, 'a')]\n6 [(0, 'd'), (4, 'b')]\n7 [(0, 'd'), (5, 'a')]\n8 [(0, 'd'), (6, 'b')]\n\n d . a\n0 [(0, 'd'), (2, 'a')]\n1 [(0, 'd'), (3, 'b')]\n2 [(0, 'd'), (4, 'a')]\n3 [(0, 'd'), (5, 'b')]\n4 [(0, 'd'), (6, 'a')]\n5 [(0, 'd'), (7, 'b')]\n6 [(0, 'd'), (8, 'a')]\n7 [(0, 'd'), (9, 'b')]\n8 [(0, 'd'), (10, 'a')]\n\n d . a . d\n0 [(0, 'd'), (2, 'a'), (4, 'd')]\n1 [(0, 'd'), (3, 'b'), (4, 'd')]\n2 [(0, 'd'), (3, 'c'), (4, 'e')]\n3 [(0, 'd'), (2, 'c'), (5, 'd')]\n4 [(0, 'd'), (1, 'c'), (5, 'd')]\n5 [(0, 'd'), (1, 'a'), (5, 'd')]\n6 [(0, 'd'), (2, 'b'), (5, 'd')]\n7 [(0, 'd'), (3, 'a'), (5, 'd')]\n8 [(0, 'd'), (4, 'b'), (5, 'd')]\n\n[ejecución 2 de 40; tardó 0.0 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_88pQATMu1h4y95dVqLu5KFdX",
+     "name": "run_python",
+     "arguments": "{\"code\":\"import world\\nfor s in ['a b . c','b a . c','a b c','b a c','a b . . . . . c','c c','d d','d . d','d a d','d c d']:\\n print('\\\\n',s)\\n x=world.parse(s)\\n for i in range(6):\\n  print(i,sorted(x.items())); x=world.step(x)\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_88pQATMu1h4y95dVqLu5KFdX",
+   "content": "\n a b . c\n0 [(0, 'a'), (1, 'b'), (3, 'c')]\n1 [(1, 'b')]\n2 [(2, 'a')]\n3 [(3, 'b')]\n4 [(4, 'a')]\n5 [(5, 'b')]\n\n b a . c\n0 [(0, 'b'), (1, 'a'), (3, 'c')]\n1 [(1, 'a'), (2, 'd')]\n2 [(1, 'c'), (2, 'e')]\n3 [(0, 'c'), (3, 'd')]\n4 [(-1, 'c'), (3, 'd')]\n5 [(-2, 'c'), (3, 'd')]\n\n a b c\n0 [(0, 'a'), (1, 'b'), (2, 'c')]\n1 []\n2 []\n3 []\n4 []\n5 []\n\n b a c\n0 [(0, 'b'), (1, 'a'), (2, 'c')]\n1 []\n2 []\n3 []\n4 []\n5 []\n\n a b . . . . . c\n0 [(0, 'a'), (1, 'b'), (7, 'c')]\n1 [(1, 'b'), (2, 'a'), (6, 'c')]\n2 [(2, 'a'), (3, 'b'), (5, 'c')]\n3 [(3, 'b')]\n4 [(4, 'a')]\n5 [(5, 'b')]\n\n c c\n0 [(0, 'c'), (1, 'c')]\n1 [(-1, 'c')]\n2 [(-2, 'c')]\n3 [(-3, 'c')]\n4 [(-4, 'c')]\n5 [(-5, 'c')]\n\n d d\n0 [(0, 'd'), (1, 'd')]\n1 []\n2 []\n3 []\n4 []\n5 []\n\n d . d\n0 [(0, 'd'), (2, 'd')]\n1 [(0, 'd'), (2, 'd')]\n2 [(0, 'd'), (2, 'd')]\n3 [(0, 'd'), (2, 'd')]\n4 [(0, 'd'), (2, 'd')]\n5 [(0, 'd'), (2, 'd')]\n\n d a d\n0 [(0, 'd'), (1, 'a'), (2, 'd')]\n1 [(0, 'd'), (2, 'e')]\n2 [(0, 'd'), (3, 'd')]\n3 [(0, 'd'), (3, 'd')]\n4 [(0, 'd'), (3, 'd')]\n5 [(0, 'd'), (3, 'd')]\n\n d c d\n0 [(0, 'd'), (1, 'c'), (2, 'd')]\n1 [(0, 'd')]\n2 [(0, 'd')]\n3 [(0, 'd')]\n4 [(0, 'd')]\n5 [(0, 'd')]\n\n[ejecución 3 de 40; tardó 0.1 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_oiQk2mRScaPF4sHZbYpwCni1",
+     "name": "write_file",
+     "arguments": "{\"name\":\"solution.py\",\"content\":\"from math import isqrt\\n\\n_RULE = {\\n    '.ab': '.', 'ab.': 'b', 'b..': 'a',\\n    '.ba': '.', 'ba.': 'a', 'a..': 'b',\\n    '..c': 'c', '.d.': 'd', 'a.c': 'd',\\n    'a.d': 'b', 'b.d': 'a', '.bd': 'c',\\n    'bd.': 'e', '.ad': 'c', 'ad.': 'e',\\n    'e..': 'd', 'd.c': 'c', '.dc': 'd',\\n    'dc.': 'a', '.da': 'd',\\n}\\n_FLIP = {'a': 'b', 'b': 'a', 'c': 'c', 'd': 'd', 'e': 'e'}\\n\\n\\ndef _step(cells):\\n    candidates = set()\\n    for p in cells:\\n        candidates.update((p - 1, p, p + 1))\\n    get = cells.get\\n    out = {}\\n    for p in candidates:\\n        s = _RULE.get(get(p - 1, '.') + get(p, '.') + get(p + 1, '.'))\\n        if s and s != '.':\\n            out[p] = s\\n    return out\\n\\n\\ndef _cavity(left, right, steps):\\n    # At the start of a lap: d at left, a at left+1, d at right.\\n    # A lap increases the width by one and lasts 2*width-2 steps.\\n    width = right - left\\n    b = 2 * width - 3\\n    laps = (isqrt(b * b + 4 * steps) - b) // 2\\n    steps -= laps * (laps + b)\\n    right += laps\\n    width += laps\\n    if steps <= width - 2:\\n        return {left: 'd', left + 1 + steps: 'b' if steps & 1 else 'a', right: 'd'}\\n    if steps == width - 1:\\n        return {left: 'd', right - 1: 'c', right: 'e'}\\n    return {left: 'd', left + 2 * width - 2 - steps: 'c', right + 1: 'd'}\\n\\n\\ndef predict(start, steps):\\n    cells = dict(start)\\n    finished = {}\\n    while steps and cells:\\n        positions = sorted(cells)\\n\\n        # These particles move outwards at the maximal propagation speed.\\n        # Nothing in the remaining world can ever reach them.\\n        while positions and cells[positions[0]] == 'c' and (\\n                len(positions) == 1 or positions[1] - positions[0] > 2):\\n            p = positions.pop(0)\\n            finished[p - steps] = cells.pop(p)\\n        while positions:\\n            p = positions[-1]\\n            if cells[p] not in 'ab':\\n                break\\n            size = 1\\n            if (len(positions) > 1 and p - positions[-2] == 1\\n                    and cells[positions[-2]] in 'ab'\\n                    and cells[positions[-2]] != cells[p]):\\n                size = 2\\n            if len(positions) > size and positions[-size] - positions[-size - 1] <= 2:\\n                break\\n            for _ in range(size):\\n                p = positions.pop()\\n                s = cells.pop(p)\\n                finished[p + steps] = _FLIP[s] if steps & 1 else s\\n        if not positions:\\n            break\\n        if len(positions) == 1:\\n            p = positions[0]\\n            s = cells[p]\\n            if s == 'e':\\n                cells = {p + 1: 'd'}\\n            # a,b,c have already been removed above, so only d or e remains.\\n            break\\n        if (len(positions) == 3 and cells[positions[0]] == 'd'\\n                and cells[positions[1]] == 'a' and cells[positions[2]] == 'd'\\n                and positions[1] == positions[0] + 1\\n                and positions[2] - positions[0] >= 3):\\n            cells = _cavity(positions[0], positions[2], steps)\\n            break\\n\\n        groups = []\\n        group = []\\n        for p in positions:\\n            if group and p - group[-1] > 2:\\n                groups.append(group)\\n                group = []\\n            group.append(p)\\n        groups.append(group)\\n        speeds = []\\n        for group in groups:\\n            if len(group) == 1:\\n                s = cells[group[0]]\\n                if s in 'ab':\\n                    speeds.append(1)\\n                elif s == 'c':\\n                    speeds.append(-1)\\n                elif s == 'd':\\n                    speeds.append(0)\\n                else:\\n                    break\\n            elif (len(group) == 2 and group[1] - group[0] == 1\\n                  and cells[group[0]] + cells[group[1]] in ('ab', 'ba')):\\n                speeds.append(1)\\n            elif all(cells[p] == 'd' for p in group) and all(\\n                    group[i + 1] - group[i] == 2 for i in range(len(group) - 1)):\\n                speeds.append(0)\\n            else:\\n                break\\n        if len(speeds) != len(groups):\\n            cells = _step(cells)\\n            steps -= 1\\n            continue\\n\\n        jump = steps\\n        for i in range(len(groups) - 1):\\n            closing = speeds[i] - speeds[i + 1]\\n            if closing > 0:\\n                distance = groups[i + 1][0] - groups[i][-1]\\n                jump = min(jump, (distance - 2 + closing - 1) // closing)\\n        new = {}\\n        for group, speed in zip(groups, speeds):\\n            for p in group:\\n                s = cells[p]\\n                new[p + speed * jump] = _FLIP[s] if speed == 1 and jump & 1 else s\\n        cells = new\\n        steps -= jump\\n    finished.update(cells)\\n    return finished\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_oiQk2mRScaPF4sHZbYpwCni1",
+   "content": "Escrito solution.py (4645 bytes)."
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_5Z533ZoXoEVElt3oxQsFHZ1R",
+     "name": "run_python",
+     "arguments": "{\"code\":\"import check, world, solution, random, time\\ncheck.compare(1000, 3000)\\ncheck.timing()\\nfor w in range(3, 30):\\n s={0:'d',1:'a',w:'d'}\\n for t in range(1000):\\n  got=solution._cavity(0,w,t)\\n  if got != s: raise Exception(w,t,got,s)\\n  s=world.step(s)\\nprint('cavity checked')\\nrng=random.Random(789)\\nt0=time.perf_counter(); slow=(0,None)\\nfor i in range(10000):\\n s=world.sample_start(rng.randrange(10**9))\\n t=time.perf_counter(); out=solution.predict(s,2_000_000_000); elapsed=time.perf_counter()-t\\n if elapsed>slow[0]: slow=(elapsed,s)\\nprint('10k large predictions',time.perf_counter()-t0,'slowest',slow)\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_5Z533ZoXoEVElt3oxQsFHZ1R",
+   "content": "1000 de 1000 iguales a la regla (pasos hasta 3000)\npasos            16:   0.0000 s \npasos           153:   0.0000 s \npasos         1,265:   0.0000 s \npasos        17,961:   0.0000 s \npasos       139,755:   0.0000 s \npasos     1,375,441:   0.0000 s \npasos    13,664,860:   0.0000 s \npasos   118,693,000:   0.0000 s \npasos 1,150,050,891:   0.0000 s \ncavity checked\n10k large predictions 0.19526641600532457 slowest (0.00011608298518694937, {-151: 'a', -150: 'b', 4504: 'c', 872154: 'a', 872155: 'b', 1145401: 'c'})\n\n[ejecución 4 de 40; tardó 3.6 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_4xwVUxAD75hZJUhyhm7mGIC0",
+     "name": "run_python",
+     "arguments": "{\"code\":\"import world, solution, itertools, time\\npatterns=set()\\nfor a in (1,2):\\n for c in (1,2): patterns.update(itertools.permutations(['ab']*a+['c']*c))\\nchecktimes=set(range(21))|{25,30,40,50,75,100,150,200}\\nt0=time.perf_counter(); count=0; maxlocal=(0,None)\\noriginal=solution._step\\nlocalcount=0\\ndef counted(s):\\n global localcount\\n localcount+=1\\n if localcount>100: raise Exception('too many local steps',start)\\n return original(s)\\nfor pattern in sorted(patterns):\\n for gaps in itertools.product(range(2,13),repeat=len(pattern)-1):\\n  start={}; p=-100\\n  for i,token in enumerate(pattern):\\n   start.update({p+j:c for j,c in enumerate(token)})\\n   if i<len(gaps):p+=len(token)+gaps[i]\\n  truth=dict(start)\\n  for t in range(201):\\n   if t in checktimes:\\n    got=solution.predict(start,t)\\n    if got!=truth:raise Exception('mismatch',start,t,got,truth)\\n   truth=world.step(truth)\\n  solution._step=counted; localcount=0\\n  got=solution.predict(start,2_000_000_000)\\n  solution._step=original\\n  if localcount>maxlocal[0]:maxlocal=(localcount,start)\\n  count+=1\\nprint('Exhaustive starts:',count,'all correct; seconds:',time.perf_counter()-t0)\\nprint('Max single steps at 2 billion:',maxlocal)\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_4xwVUxAD75hZJUhyhm7mGIC0",
+   "content": "Exhaustive starts: 8734 all correct; seconds: 6.005051749991253\nMax single steps at 2 billion: (11, {-100: 'a', -99: 'b', -94: 'a', -93: 'b', -89: 'c', -76: 'c'})\n\n[ejecución 5 de 40; tardó 6.1 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "",
+   "tool_calls": [
+    {
+     "id": "call_saKOgBLIrVhksEQQpsN0XbFD",
+     "name": "run_python",
+     "arguments": "{\"code\":\"import world, solution, random, time\\nrng=random.Random(4831983)\\nt0=time.perf_counter()\\nfor i in range(50000):\\n start=world.sample_start(rng.randrange(10**12))\\n t=rng.randrange(2_000_000_001); split=rng.randrange(t+1)\\n a=solution.predict(start,t)\\n b=solution.predict(solution.predict(start,split),t-split)\\n if a!=b:raise Exception(start,t,split,a,b)\\nprint('50000 composition tests passed:',time.perf_counter()-t0)\\nt0=time.perf_counter()\\nfor i in range(80):\\n tokens=['ab']*rng.randint(1,2)+['c']*rng.randint(1,2); rng.shuffle(tokens)\\n start={}; p=rng.randrange(-100000,100000)\\n for token in tokens:\\n  for ch in token: start[p]=ch;p+=1\\n  p+=rng.randint(2,1000)\\n t=rng.randint(20000,200000)\\n got=solution.predict(start,t); truth=world.run(start,t)\\n if got!=truth:raise Exception(start,t,got,truth)\\nprint('80 longer direct tests passed:',time.perf_counter()-t0)\\nprint('file bytes',len(open('solution.py','rb').read()))\\n\"}"
+    }
+   ]
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_saKOgBLIrVhksEQQpsN0XbFD",
+   "content": "50000 composition tests passed: 1.4658425829838961\n80 longer direct tests passed: 15.558723124995595\nfile bytes 4645\n\n[ejecución 6 de 40; tardó 17.1 s]"
+  },
+  {
+   "role": "assistant",
+   "content": "LISTO\nEl programa salta directamente entre encuentros y aplica la regla exacta durante las colisiones.\nLos rebotes entre paredes se calculan con una fórmula, sin recorrer cada paso. `solution.py` quedó guardado y probado.",
+   "tool_calls": []
+  }
+ ]
+}
