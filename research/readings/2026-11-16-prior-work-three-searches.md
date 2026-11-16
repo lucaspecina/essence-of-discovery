@@ -184,3 +184,38 @@ humana. ARC-AGI-3 ([arXiv:2603.24621](https://arxiv.org/abs/2603.24621) [txt]): 
 4. Brecha entre un resolvedor superficial y uno profundo como filtro de "pide una idea". Puede ser puro
    cómputo.
 5. Duelos proponente–resolvedor con verificación exacta. Medido: colapsa en hashes y constantes memorizadas.
+
+## D. Búsqueda aparte, el mismo día: "la IA entrega un programa que resume y se lo compara contra la regla"
+
+Seis búsquedas hechas por Claude con esa formulación exacta, después de que Lucas preguntó cómo puede ser
+que no exista algo muy parecido. Solo se leyeron los resúmenes que devolvió el buscador.
+
+**Lo que existe, pieza por pieza:**
+
+- **Medir compresión con programas.** Yoran et al., "The KoLMogorov Test: Compression by Code Generation"
+  (Meta y Tel Aviv, ICLR 2025, [arXiv:2503.13992](https://arxiv.org/abs/2503.13992)) [2ª]: el modelo recibe
+  una secuencia de datos (audio, texto, ADN, salidas de programas) y tiene que escribir el programa más
+  corto que la reproduce. Mide **tamaño**, no tiempo. No hay regla a la vista ni pregunta por un paso
+  futuro: se trata de reproducir datos ya dados.
+- **"Ganarle a la cuenta" en máquinas chicas.** Zenil, Soler-Toscano & Joosten 2011,
+  [arXiv:1104.3421](https://arxiv.org/abs/1104.3421): todas las máquinas de Turing de 3 y 4 estados, con un
+  buscador de fórmulas. Sin modelos de lenguaje. No apareció ninguna continuación con LLMs.
+- **Darle a un modelo la regla de un autómata y pedirle un paso.** Un cuaderno de Wolfram Cloud, "Limits of
+  Language Model Computation" [2ª, sin fecha visible]: regla completa, fila inicial y cantidad de pasos; se
+  puntúa el acierto por casilla. El modelo contesta directamente, sin entregar un programa.
+- **Programas juzgados por correctos y rápidos.** AlgoTune, GSO (menos de 5% de éxito), SWE-fficiency,
+  FrontierOR [2ª]: optimizar código o algoritmos existentes. Ninguno parte de un sistema de reglas ni compara
+  contra correrlo paso por paso. Ya conocíamos el de sucesiones de OEIS (arXiv:2411.04372), que pide código
+  "accurately and efficiently ... without using lookup tables".
+- **Resumir un ciclo en una fórmula** (análisis de programas clásico, LoopSCC): no apareció un banco para
+  modelos de lenguaje.
+- Ya conocido: DeepMind (arXiv:2610.22603), aceleraciones verificadas con Lean en máquinas tipo Busy Beaver.
+
+**Lo que no apareció:** las piezas juntas. Regla tipo Wolfram a la vista + la IA entrega un programa + se lo
+compara contra la regla corrida + se mide tamaño y cómo crece el tiempo de ejecución.
+
+**Una explicación posible de por qué (juicio de Claude, sin fuente):** en reglas con una ley sencilla los
+modelos de hoy probablemente lo resuelven (es lo que mostró nuestra primera prueba), y en reglas sin ley no
+hay nada que encontrar. El banco puede salir "todo fácil o todo imposible". La franja del medio existe pero
+es angosta y hay que saber ubicarla; por eso el trabajo de DeepMind se fue a las máquinas tipo Busy Beaver,
+donde esa franja es rica.
